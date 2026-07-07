@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DArMa Sport - Entrenamiento en el Nordeste Segoviano</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+       
+        :root {
+            --primary: #2d5a27;
+            --primary-light: #4a7c43;
+            --accent: #e8f5e9;
+            --text: #333;
+            --text-light: #666;
+            --white: #fff;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+       
+        html {
+            scroll-behavior: smooth;
+        }
+       
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+        }
+       
+        /* NAV */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: var(--white);
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            padding: 1rem 2rem;
+        }
+       
+        nav .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+       
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+       
+        .logo span {
+            color: var(--primary-light);
+        }
+       
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+       
+        nav a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+       
+        nav a:hover {
+            color: var(--primary);
+        }
+       
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+       
+        /* HERO */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: var(--white);
+            text-align: center;
+            padding: 6rem 2rem 4rem;
+        }
+       
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 1rem;
+        }
+       
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            opacity: 0.95;
+        }
+       
+        .hero-features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+       
+        .hero-features span {
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.9rem;
+        }
+       
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: var(--white);
+            color: var(--primary);
+            text-decoration: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+       
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+       
+        /* SECTIONS */
+        section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+       
+        section h2 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+       
+        section > p {
+            text-align: center;
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto 3rem;
+        }
+       
+        /* NOSOTROS */
+        .about-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+       
+        .about-card {
+            background: var(--accent);
+            padding: 2rem;
+            border-radius: 1rem;
+        }
+       
+        .about-card h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+       
+        .about-card ul {
+            margin-left: 1.2rem;
+            color: var(--text-light);
+            margin-top: 0.5rem;
+        }
+       
+        .about-card li {
+            margin-bottom: 0; /* Sin interlineado extra */
+            line-height: 1.3; /* Más compacto */
+        }
+       
+        /* SERVICIOS / OBJETIVOS */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.2rem;
+        }
+       
+        .service-card {
+            background: var(--white);
+            border: 1px solid #e0e0e0;
+            border-radius: 1rem;
+            padding: 1rem 1.2rem; /* Menos espacio (antes 2rem) */
+            text-align: center;
+            transition: box-shadow 0.3s, transform 0.3s;
+        }
+       
+        .service-card:hover {
+            box-shadow: var(--shadow);
+            transform: translateY(-3px);
+        }
+
+        /* Nuevo contenedor para alinear icono y título */
+        .service-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+       
+        .service-card .icon {
+            font-size: 1.5rem; /* Icono más pequeño */
+            margin-bottom: 0; /* Sin margen inferior */
+        }
+       
+        .service-card h3 {
+            color: var(--primary);
+            margin-bottom: 0; /* Sin margen inferior */
+            font-size: 1.2rem;
+        }
+
+        .service-card p {
+            font-size: 0.95rem;
+            margin: 0;
+        }
+       
+        /* PLANES */
+        #planes {
+            background: var(--accent);
+            max-width: 100%;
+            padding: 5rem 2rem;
+        }
+       
+        #planes > div {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+       
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+       
+        .plan-card {
+            background: var(--white);
+            border-radius: 1rem;
+            padding: 1.2rem; /* Reducido para mayor compactación */
+            box-shadow: var(--shadow);
+            border: 1px solid #e0e0e0;
+        }
+       
+        .plan-card h3 {
+            color: var(--primary);
+            margin-bottom: 0.4rem;
+            font-size: 1.15rem;
+        }
+       
+        .plan-card p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+       
+        .discounts {
+            margin-top: 3rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+       
+        .discount-box {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--primary);
+        }
+       
+        .discount-box h4 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* CONDICIONES (Ajustado) */
+        .condiciones-list {
+            margin-top: 2rem;
+            list-style-position: inside;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* CONTACTO */
+        #contacto {
+            background: var(--primary);
+            color: var(--white);
+            max-width: 100%;
+            text-align: center;
+        }
+       
+        #contacto h2 {
+            color: var(--white);
+        }
+       
+        .contact-methods {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+       
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.1rem;
+        }
+       
+        .contact-item a {
+            color: var(--white);
+            text-decoration: none;
+        }
+       
+        .contact-item a:hover {
+            text-decoration: underline;
+        }
+       
+        /* FOOTER */
+        footer {
+            background: #1a3518;
+            color: rgba(255,255,255,0.7);
+            text-align: left;
+            padding: 1.5rem;
+            font-size: 0.7rem;
+        }
+       
+        /* RESPONSIVE */
+        section {
+            padding:4rem 1rem;
+        }
+
+        nav {
+            padding:0.8rem 1rem;
+        }
+
+        .hero {
+            padding:5rem 1rem 3rem;
+        }
+
+        .about-grid,
+        .services-grid,
+        .plans-grid {
+            grid-template-columns:1fr;
+        }
+
+        .contact-item {
+            width:100%;
+            justify-content:center;
+        } 
+
+        @media (max-width: 768px) {
+            nav ul {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--white);
+                flex-direction: column;
+                padding: 1rem;
+                gap: 1rem;
+                box-shadow: var(--shadow);
+            }
+           
+            nav ul.active {
+                display: flex;
+            }
+           
+            .menu-toggle {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="container">
+            <div class="logo">DArMa <span>sport</span></div>
+            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+            <ul id="navMenu">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#nosotros">Nosotros</a></li>
+                <li><a href="#servicios">Servicios</a></li>
+                <li><a href="#planes">Tarifas</a></li>
+                <li><a href="#padel">Pádel Fresno</a></li>
+                <li><a href="#contacto">Contacto y Reservas</a></li>
+            </ul>
+        </div>
+    </nav>
+ 
+    <header class="hero" id="inicio">
+        <div>
+            <h1>Bienvenido a DArMa sport</h1>
+            <p>Mejoramos la salud y condición física en el Nordeste Segoviano, acercando el entrenamiento profesional a entornos rurales.</p>
+            <a href="#contacto" class="btn">Contactar</a>
+            <div class="hero-features">
+                <span>✓ Entrenamientos personalizados</span>
+                <span>✓ Grupos reducidos</span>
+                <span>✓ En plena naturaleza</span>
+                <span>✓ Profesional titulado</span>
+            </div>
+        </div>
+    </header>
+ 
+    <section id="nosotros">
+        <h2>👥 Nosotros</h2>
+        <p>Creemos en el movimiento como herramienta de salud, bienestar y autonomía.</p>
+       
+        <div class="about-grid">
+            <div class="about-card">
+                <h3>Nuestra filosofía</h3>
+                <p>DArMa sport nace con la idea de acercar el fitness y la salud a municipios rurales, donde el acceso a servicios deportivos especializados es limitado.</p>
+                <p style="margin-top:1rem;">Trabajamos con cercanía, profesionalidad and compromiso. Nuestro objetivo es mejorar la calidad de vida a través del ejercicio físico seguro y adaptado a cada persona.</p>
+            </div>
+           
+            <div class="about-card">
+                <h3>David</h3>
+                <p><strong>Graduado en CAFYD</strong>, Técnico Superior en Animación Deportiva, Entrenador Nacional de Fútbol, Monitor en varias disciplinas.</p>
+                <ul>
+                    <li>Monitor Deporte Social Adultos (4 cursos)</li>
+                    <li>Profesor Escuelas Deportivas (4 cursos)</li>
+                    <li>Monitor Campamentos Riaza (12 veranos)</li>
+                    <li>Entrenador Fútbol/Futsal (14 temporadas)</li>
+                </ul>
+
+                <h3 style="margin-top: 1.5rem;">Marta</h3>
+                <p><strong>Graduada Fisioterapia</strong></p>
+                <ul>
+                    <li>Fisioterapeuta independiente</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+ 
+    <section id="objetivos">
+        <h2>🎯 Objetivos</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-header">
+                    <span class="icon">❤️</span>
+                    <h3>Salud rural</h3>
+                </div>
+                <p>Mejorar la salud general de la población rural</p>
+            </div>
+            <div class="service-card">
+                <div class="service-header">
+                    <span class="icon">🏃</span>
+                    <h3>Actividad regular</h3>
+                </div>
+                <p>Fomentar la actividad física como hábito</p>
+            </div>
+            <div class="service-card">
+                <div class="service-header">
+                    <span class="icon">🛡️</span>
+                    <h3>Prevención</h3>
+                </div>
+                <p>Prevenir lesiones y patologías del sedentarismo</p>
+            </div>
+            <div class="service-card">
+                <div class="service-header">
+                    <span class="icon">🤝</span>
+                    <h3>Comunidad</h3>
+                </div>
+                <p>Crear vínculos a través del deporte</p>
+            </div>
+        </div>
+    </section>
+ 
+    <section id="servicios">
+        <h2>💪 Servicios</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-header">
+                    <span class="icon">👤</span>
+                    <h3>Entrenamiento Personal</h3>
+                </div>
+                <p>Plan individual adaptado a edad, condición física y objetivos.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-header">
+                    <span class="icon">🎾</span>
+                    <h3>Parejas - Raqueta</h3>
+                </div>
+                <p>Preparación y mejora en pádel, tenis o frontenis.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-header">
+                    <span class="icon">👥</span>
+                    <h3>Grupos Reducidos</h3>
+                </div>
+                <p>Sesiones dinámicas en grupos pequeños homogéneos.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-header">
+                    <span class="icon">🩺</span>
+                    <h3>Programas de Salud</h3>
+                </div>
+                <p>Ejercicio para mayores, readaptación y mejora funcional.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-header">
+                    <span class="icon">💆</span>
+                    <h3>Fisioterapia</h3>
+                </div>
+                <p>Diagnóstico, tratamiento articular, restauración y prevención.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-header">
+                    <span class="icon">🌲</span>
+                    <h3>Aire Libre</h3>
+                </div>
+                <p>Entrenamientos en el entorno natural del Nordeste.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-header">
+                    <span class="icon">⚽</span>
+                    <h3>Equipos Competición</h3>
+                </div>
+                <p>Entrenamiento, dirección y gestión de equipos.</p>
+            </div>
+        </div>
+    </section>
+ 
+    <section id="planes">
+        <div>
+            <h2>📦 Planes y Tarifas</h2>
+            <p>Precios base. Consulta descuentos por edad y bonos mensuales.</p>
+           
+            <div class="plans-grid">
+                <div class="plan-card">
+                    <h3>Plan Individual</h3>
+                    <p>Entrenamiento personalizado 1 a 1 ... <strong>25 €/sesión</strong></p>
+                </div>
+                <div class="plan-card">
+                    <h3>Plan Parejas</h3>
+                    <p>Deportes de raqueta ... <strong>28 €/sesión</strong></p>
+                </div>
+                <div class="plan-card">
+                    <h3>Grupos 5-10</h3>
+                    <p>Sesiones grupales reducidas ... <strong>25 €/sesión</strong> (+2,00 € por alumno)</p>
+                </div>
+                <div class="plan-card">
+                    <h3>Equipos Competición</h3>
+                    <p>Entrenamientos, partidos y desplazamientos ... <strong>15 €/h</strong> (máx. 250 €/mes o 2.000 €/temporada)</p>
+                </div>
+                <div class="plan-card" style="border: 2px solid var(--primary-light);">
+                    <div style="color: var(--primary-light); font-weight: 800; font-size: 1.35rem; margin-bottom: 0.4rem; text-align: center; letter-spacing: 0.05em;">** NOVEDAD **</div> 
+                    <h3>Gimnasio de Fresno</h3>
+                    <p>Uso libre individual ... <strong>6 €/sesión</strong></p>
+                    <p>Opción Clases grupales dirigidas</p>
+                    <p><strong>Fisioterapia ... (independiente)</strong></p>
+                </div>
+            </div>
+           
+            <div class="discounts">
+                <div class="discount-box">
+                    <h4>Descuentos por edad y clase</h4>
+                    <p><strong>Jóvenes (&lt;30 años):</strong> 10% dto.</p>
+                    <p><strong>Senior (&gt;60 años):</strong> 20% dto.</p>
+                </div>
+                <div class="discount-box">
+                    <h4>Bonos Prepago</h4>
+                    <p><strong>Quincenal (4 sesiones):</strong> 10% dto.</p>
+                    <p><strong>Mensual (8 sesiones.):</strong> 15% dto.</p>
+                    <p><strong>Trimestral (25 sesiones):</strong> 20% dto.</p>
+                </div>
+            </div>
+            
+            <ul class="condiciones-list">
+                <li><strong>Promoción IVA incluido</strong></li>
+                <li>Duración de sesiones una (1) hora.</li>
+                <li>Días y hora de sesiones previo concierto.</li>
+                <li>Planificación inicial dos (2) días por semana.</li>
+                <li>Alquiler y reserva de otras pistas por usuarios.</li>
+                <li>Aforo limitado con preferencia a grupos.</li>
+                <li>Facturación y cobros por adelantado.</li>
+                <li>Bono trimestral (25) facturable en tres (3) meses.</li>
+                <li>Las ausencias justificadas del monitor se compensarán en días o económicamente.</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="padel" style="text-align: center;">
+        <h2>🎾 Pádel Fresno</h2>
+        <p style="margin-bottom: 1rem;">Actividades de pádel en Fresno de Cantespino y Cascajares.</p>
+        <div>
+            
+		<a href="https://darma<a href="https://darma-sport.github.io/Padel-Fresno/" class="btn" style="background-color: #b54f31;color: white;">Ver Resultados de I Torneo Pádel Fresno de Cantespino</a>
+
+        </div>
+    </section>  
+
+    <section id="contacto">
+        <h2>📞 Contacto y reservas</h2>
+        <p style="color: rgba(255,255,255,0.9);">Para más información, contáctanos</p>
+       
+        <div class="contact-methods">
+            <div class="contact-item">
+                📱 <a href="https://wa.me/34679984097">WhatsApp: 679 984 098</a>
+            </div>
+            <div class="contact-item">
+                📧 <a href="mailto:darmadeportes@gmail.com">Correo David</a>
+            </div>
+            <div class="contact-item">
+                🌐 <a href="https://darma-sport.github.io/Padel-Fresno/">www.darma-sport</a>
+            </div>
+        </div>
+
+        <div style="margin-top:30px;text-align:center;">
+            <p style="font-size:1.2rem;font-weight:bold;color:white; margin-bottom:10px;">Pulsa o pincha en este QR</p>
+            <a href="https://docs.google.com/forms/d/1biULNGMwKHC6nKn5AnBaupySicf2YiVccMYtQByyhG4/viewform">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://docs.google.com/forms/d/1biULNGMwKHC6nKn5AnBaupySicf2YiVccMYtQByyhG4/viewform" style="width:220px;max-width:90%;background:white;padding:10px;border-radius:10px;" alt="QR Formulario">
+            </a>
+        </div>
+
+        <p style="text-align:center; font-size:14px; color:#e8f5e9; margin-top: 15px;">
+            Envíanos el formulario y whatsapp y recibirás información.
+        </p>
+
+        <div style="text-align:center; margin-top: 20px;">
+            <a href="https://wa.me/34679984097?text=Hola,%20quiero%20información%20de%20entrenamientos" class="btn">
+                Solicitud de información por WhatsApp
+            </a>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 DArMa sport · Nordeste Segoviano</p>
+        <p style="margin-top: 0.5rem;">PROTECCION DE DATOS.- De acuerdo con lo establecido en el RGPD (mayo/2018), en la LOPD y los RD que la desarrollan, los datos aquí aportados serán incorporados a un fichero del que soy titular, con la finalidad de realizar las gestiones económicas y administrativas.</p>
+        <p style="margin-top: 0.5rem;">Todas las personas que en el registro figuran, tendrán la posibilidad de ejercitar sus derechos de rectificación, cancelación y oposición de sus datos mediante solicitud por correo electrónico.</p>
+    </footer>
+ 
+    <script>
+        function toggleMenu() {
+            document.getElementById('navMenu').classList.toggle('active');
+        }
+       
+        // Cerrar menú al hacer clic en un enlace
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('navMenu').classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>
