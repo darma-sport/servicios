@@ -339,6 +339,22 @@
             text-decoration: underline;
         }
        
+        .copy-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: var(--white);
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.4rem;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background 0.3s;
+            margin-left: 0.5rem;
+        }
+       
+        .copy-btn:hover {
+            background: rgba(255,255,255,0.4);
+        }
+       
         /* FOOTER */
         footer {
             background: #1a3518;
@@ -610,7 +626,7 @@
         <p style="margin-bottom: 1rem;">Actividades de pádel en Fresno de Cantespino y Cascajares.</p>
         <div>
             
-		<a href="https://darma<a href="https://darma-sport.github.io/Padel-Fresno/" class="btn" style="background-color: #b54f31;color: white;">Ver Resultados de I Torneo Pádel Fresno de Cantespino</a>
+		<a href="https://darma-sport.github.io/Padel-Fresno/" target="_blank" rel="noopener noreferrer" class="btn" style="background-color: #b54f31;color: white;">Ver Resultados de I Torneo Pádel Fresno de Cantespino</a>
 
         </div>
     </section>  
@@ -621,19 +637,21 @@
        
         <div class="contact-methods">
             <div class="contact-item">
-                📱 <a href="https://wa.me/34679984097">WhatsApp: 679 984 098</a>
+                📱 <a href="https://wa.me/34679984097" target="_blank" rel="noopener noreferrer">WhatsApp: 679 984 098</a>
             </div>
             <div class="contact-item">
-                📧 <a href="mailto:darmadeportes@gmail.com">Correo David</a>
+                📧 <a href="mailto:darmadeportes@gmail.com">darmadeportes@gmail.com</a>
+                <button onclick="copiarEmail()" class="copy-btn" title="Copiar correo al portapapeles">📋 Copiar</button>
+                <span id="copy-msg" style="display: none; font-size: 0.9rem; color: #a5d6a7; margin-left: 0.5rem;">¡Copiado!</span>
             </div>
             <div class="contact-item">
-                🌐 <a href="https://darma-sport.github.io/servicios/">www.darma-sport</a>
+                🌐 <a href="https://darma-sport.github.io/servicios/" target="_blank" rel="noopener noreferrer">www.darma-sport</a>
             </div>
         </div>
 
         <div style="margin-top:30px;text-align:center;">
             <p style="font-size:1.2rem;font-weight:bold;color:white; margin-bottom:10px;">Pulsa o pincha en este QR</p>
-            <a href="https://docs.google.com/forms/d/1biULNGMwKHC6nKn5AnBaupySicf2YiVccMYtQByyhG4/viewform">
+            <a href="https://docs.google.com/forms/d/1biULNGMwKHC6nKn5AnBaupySicf2YiVccMYtQByyhG4/viewform" target="_blank" rel="noopener noreferrer">
                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://docs.google.com/forms/d/1biULNGMwKHC6nKn5AnBaupySicf2YiVccMYtQByyhG4/viewform" style="width:220px;max-width:90%;background:white;padding:10px;border-radius:10px;" alt="QR Formulario">
             </a>
         </div>
@@ -643,7 +661,7 @@
         </p>
 
         <div style="text-align:center; margin-top: 20px;">
-            <a href="https://wa.me/34679984097?text=Hola,%20quiero%20información%20de%20entrenamientos" class="btn">
+            <a href="https://wa.me/34679984097?text=Hola,%20quiero%20información%20de%20entrenamientos" class="btn" target="_blank" rel="noopener noreferrer">
                 Solicitud de información por WhatsApp
             </a>
         </div>
@@ -666,6 +684,23 @@
                 document.getElementById('navMenu').classList.remove('active');
             });
         });
+       
+        // Función para copiar el correo al portapapeles
+        function copiarEmail() {
+            const email = "darmadeportes@gmail.com";
+            const tempInput = document.createElement("input");
+            tempInput.value = email;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+            
+            const msg = document.getElementById("copy-msg");
+            msg.style.display = "inline";
+            setTimeout(() => {
+                msg.style.display = "none";
+            }, 2000);
+        }
     </script>
 </body>
 </html>
