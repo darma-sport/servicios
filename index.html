@@ -51,13 +51,14 @@
         }
        
         .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary);
+            display: flex;
+            align-items: center;
+            text-decoration: none;
         }
        
-        .logo span {
-            color: var(--primary-light);
+        .logo img {
+            height: 50px; /* Puedes cambiar este valor si lo quieres más grande o más pequeño */
+            width: auto;
         }
        
         nav ul {
@@ -97,9 +98,25 @@
             padding: 9rem 2rem 4rem; /* Modificado: de 6rem a 9rem para dar más espacio superior */
         }
        
+        .hero-title-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-logo {
+            height: 90px;
+            width: auto;
+            border-radius: 15px; /* Bordes suaves para que la imagen con fondo blanco quede bien integrada */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+       
         .hero h1 {
             font-size: clamp(2rem, 5vw, 3.5rem);
-            margin-bottom: 1rem;
+            margin-bottom: 0;
+            text-align: left;
         }
        
         .hero p {
@@ -384,6 +401,16 @@
         }
 
         @media (max-width: 768px) {
+            .hero-title-wrapper {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            .hero-title-wrapper h1 {
+                text-align: center;
+            }
+
             .contact-item {
                 width:100%;
                 justify-content:center;
@@ -416,7 +443,9 @@
 
     <nav>
         <div class="container">
-            <div class="logo">DArMa <span>sport</span></div>
+            <a href="#inicio" class="logo">
+                <img src="Logo.jpeg" alt="DArMa Sport Logo">
+            </a>
             <button class="menu-toggle" onclick="toggleMenu()">☰</button>
             <ul id="navMenu">
                 <li><a href="#inicio">Inicio</a></li>
@@ -431,7 +460,10 @@
  
     <header class="hero" id="inicio">
         <div>
-            <h1>Bienvenido a DArMa sport</h1>
+            <div class="hero-title-wrapper">
+                <img src="Logo.jpeg" alt="Logo DArMa Sport" class="hero-logo">
+                <h1>Bienvenido a DArMa sport</h1>
+            </div>
             <p>Mejoramos la salud y condición física en el Nordeste Segoviano, acercando el entrenamiento profesional a entornos rurales.</p>
             <a href="#contacto" class="btn">Contactar</a>
             <div class="hero-features">
