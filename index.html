@@ -1,714 +1,564 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DArMa Sport - Entrenamiento en el Nordeste Segoviano</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Outfit & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons (Solo usado para navegación/UI global) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#2d5a27',      /* Verde Oliva Deportivo de Fondo */
+                            primary: '#225420',   /* Verde principal deportivo */
+                            light: '#387c35',     /* Verde claro vibrante */
+                            accent: '#86efac',    /* Verde lima/brillante de acento */
+                            soft: '#f0fdf4',      /* Fondo verde muy suave */
+                            gray: '#1e293b'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+                        title: ['Outfit', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-       
-        :root {
-            --primary: #2d5a27;
-            --primary-light: #4a7c43;
-            --accent: #e8f5e9;
-            --text: #333;
-            --text-light: #666;
-            --white: #fff;
-            --shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-       
-        html {
-            scroll-behavior: smooth;
-        }
-       
         body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            line-height: 1.6;
-            color: var(--text);
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
-       
-        /* NAV */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: var(--white);
-            box-shadow: var(--shadow);
-            z-index: 1000;
-            padding: 1rem 2rem;
+        h1, h2, h3, h4 {
+            font-family: 'Outfit', sans-serif;
         }
-       
-        nav .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        /* Efecto clip-path deportivo en el Hero y secciones */
+        .sporty-clip {
+            clip-path: polygon(0 0, 100% 0, 100% 95%, 0 100%);
         }
-       
-        .logo {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
+        .sporty-clip-reverse {
+            clip-path: polygon(0 5%, 100% 0, 100% 100%, 0 100%);
         }
-       
-        .logo img {
-            height: 50px; /* Puedes cambiar este valor si lo quieres más grande o más pequeño */
-            width: auto;
-        }
-       
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-       
-        nav a {
-            text-decoration: none;
-            color: var(--text);
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-       
-        nav a:hover {
-            color: var(--primary);
-        }
-       
-        .menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-       
-        /* HERO */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: var(--white);
-            text-align: center;
-            padding: 9rem 2rem 4rem; /* Modificado: de 6rem a 9rem para dar más espacio superior */
-        }
-       
-        .hero-title-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .hero-logo {
-            height: 90px;
-            width: auto;
-            border-radius: 15px; /* Bordes suaves para que la imagen con fondo blanco quede bien integrada */
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-       
-        .hero h1 {
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            margin-bottom: 0;
-            text-align: left;
-        }
-       
-        .hero p {
-            font-size: 1.2rem;
-            max-width: 600px;
-            margin: 0 auto 2rem;
-            opacity: 0.95;
-        }
-       
-        .hero-features {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-       
-        .hero-features span {
-            background: rgba(255,255,255,0.2);
-            padding: 0.5rem 1rem;
-            border-radius: 2rem;
-            font-size: 0.9rem;
-        }
-       
-        .btn {
-            display: inline-block;
-            padding: 1rem 2rem;
-            background: var(--white);
-            color: var(--primary);
-            text-decoration: none;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-       
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-        }
-       
-        /* SECTIONS */
-        section {
-            padding: 5rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-       
-        section h2 {
-            font-size: 2rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-            text-align: center;
-        }
-       
-        section > p {
-            text-align: center;
-            color: var(--text-light);
-            max-width: 700px;
-            margin: 0 auto 3rem;
-        }
-       
-        /* NOSOTROS */
-        .about-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-       
-        .about-card {
-            background: var(--accent);
-            padding: 2rem;
-            border-radius: 1rem;
-        }
-       
-        .about-card h3 {
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-       
-        .about-card ul {
-            margin-left: 1.2rem;
-            color: var(--text-light);
-            margin-top: 0.5rem;
-        }
-       
-        .about-card li {
-            margin-bottom: 0; /* Sin interlineado extra */
-            line-height: 1.3; /* Más compacto */
-        }
-       
-        /* SERVICIOS / OBJETIVOS */
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.2rem;
-        }
-       
-        .service-card {
-            background: var(--white);
-            border: 1px solid #e0e0e0;
-            border-radius: 1rem;
-            padding: 1rem 1.2rem; /* Menos espacio (antes 2rem) */
-            text-align: center;
-            transition: box-shadow 0.3s, transform 0.3s;
-        }
-       
-        .service-card:hover {
-            box-shadow: var(--shadow);
-            transform: translateY(-3px);
-        }
-
-        /* Nuevo contenedor para alinear icono y título */
-        .service-header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
-        }
-       
-        .service-card .icon {
-            font-size: 1.5rem; /* Icono más pequeño */
-            margin-bottom: 0; /* Sin margen inferior */
-        }
-       
-        .service-card h3 {
-            color: var(--primary);
-            margin-bottom: 0; /* Sin margen inferior */
-            font-size: 1.2rem;
-        }
-
-        .service-card p {
-            font-size: 0.95rem;
-            margin: 0;
-        }
-       
-        /* PLANES */
-        #planes {
-            background: var(--accent);
-            max-width: 100%;
-            padding: 5rem 2rem;
-        }
-       
-        #planes > div {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-       
-        .plans-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-        }
-       
-        .plan-card {
-            background: var(--white);
-            border-radius: 1rem;
-            padding: 1.2rem; /* Reducido para mayor compactación */
-            box-shadow: var(--shadow);
-            border: 1px solid #e0e0e0;
-        }
-       
-        .plan-card h3 {
-            color: var(--primary);
-            margin-bottom: 0.4rem;
-            font-size: 1.15rem;
-        }
-       
-        .plan-card p {
-            color: var(--text-light);
-            font-size: 0.95rem;
-            line-height: 1.4;
-        }
-       
-        .discounts {
-            margin-top: 3rem;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
-       
-        .discount-box {
-            background: var(--white);
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            border-left: 4px solid var(--primary);
-        }
-       
-        .discount-box h4 {
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        /* CONDICIONES (Ajustado) */
-        .condiciones-list {
-            margin-top: 2rem;
-            list-style-position: inside;
-            color: var(--text-light);
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-
-        /* CONTACTO */
-        #contacto {
-            background: var(--primary);
-            color: var(--white);
-            max-width: 100%;
-            text-align: center;
-        }
-       
-        #contacto h2 {
-            color: var(--white);
-        }
-       
-        .contact-methods {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-       
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-size: 1.1rem;
-        }
-       
-        .contact-item a {
-            color: var(--white);
-            text-decoration: none;
-        }
-       
-        .contact-item a:hover {
-            text-decoration: underline;
-        }
-       
-        .copy-btn {
-            background: rgba(255,255,255,0.2);
-            border: 1px solid rgba(255,255,255,0.4);
-            color: var(--white);
-            padding: 0.2rem 0.6rem;
-            border-radius: 0.4rem;
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: background 0.3s;
-            margin-left: 0.5rem;
-        }
-       
-        .copy-btn:hover {
-            background: rgba(255,255,255,0.4);
-        }
-       
-        /* FOOTER */
-        footer {
-            background: #1a3518;
-            color: rgba(255,255,255,0.7);
-            text-align: left;
-            padding: 1.5rem;
-            font-size: 0.7rem;
-        }
-       
-        /* RESPONSIVE */
-        section {
-            padding:4rem 1rem;
-        }
-
-        nav {
-            padding:0.8rem 1rem;
-        }
-
-        .hero {
-            padding:8rem 1rem 3rem; /* Modificado: de 5rem a 8rem en móviles */
-        }
-
-        .about-grid,
-        .services-grid,
-        .plans-grid {
-            grid-template-columns:1fr;
-        }
-
         @media (max-width: 768px) {
-            .hero-title-wrapper {
-                flex-direction: column;
-                text-align: center;
-                gap: 1rem;
-            }
-
-            .hero-title-wrapper h1 {
-                text-align: center;
-            }
-
-            .contact-item {
-                width:100%;
-                justify-content:center;
-            } 
-
-            nav ul {
-                display: none;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                background: var(--white);
-                flex-direction: column;
-                padding: 1rem;
-                gap: 1rem;
-                box-shadow: var(--shadow);
-            }
-           
-            nav ul.active {
-                display: flex;
-            }
-           
-            .menu-toggle {
-                display: block;
+            .sporty-clip {
+                clip-path: none;
             }
         }
     </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-800 antialiased overflow-x-hidden">
 
-    <nav>
-        <div class="container">
-            <a href="#inicio" class="logo">
-                <img src="Logo.jpeg" alt="DArMa Sport Logo">
-            </a>
-            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
-            <ul id="navMenu">
-                <li><a href="#inicio">Inicio</a></li>
-                <li><a href="#nosotros">Nosotros</a></li>
-                <li><a href="#servicios">Servicios</a></li>
-                <li><a href="#gimnasio">Gimnasio Fresno</a></li>
-                <li><a href="#planes">Tarifas</a></li>
-                <li><a href="#contacto">Contacto y Reservas</a></li>
-            </ul>
+    <!-- NAV -->
+    <nav class="fixed top-0 left-0 w-full bg-white/95 backdrop-blur-md shadow-md z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <a href="#inicio" class="flex items-center gap-2 group">
+                    <img src="Logo.jpeg" alt="DArMa Sport Logo" class="h-14 w-auto rounded-lg shadow-sm border border-slate-100 transition-transform group-hover:scale-105">
+                </a>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center gap-8">
+                    <ul class="flex items-center gap-6">
+                        <li><a href="#inicio" class="text-slate-600 hover:text-brand-light font-semibold transition-colors">Inicio</a></li>
+                        <li><a href="#nosotros" class="text-slate-600 hover:text-brand-light font-semibold transition-colors">Nosotros</a></li>
+                        <li><a href="#servicios" class="text-slate-600 hover:text-brand-light font-semibold transition-colors">Servicios</a></li>
+                        <li><a href="#gimnasio" class="text-slate-600 hover:text-brand-light font-semibold transition-colors">Gimnasio Fresno</a></li>
+                        <li><a href="#planes" class="text-slate-600 hover:text-brand-light font-semibold transition-colors">Tarifas</a></li>
+                    </ul>
+                    <a href="#contacto" class="bg-brand-primary hover:bg-brand-light text-white px-5 py-2.5 rounded-lg font-bold text-sm uppercase tracking-wider transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5">Contacto y Reservas</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden p-2 rounded-lg text-slate-700 hover:bg-slate-100 focus:outline-none" onclick="toggleMenu()" aria-label="Abrir menú">
+                    <i data-lucide="menu" class="w-7 h-7" id="menuIcon"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="navMenu" class="hidden md:hidden bg-white border-t border-slate-100 shadow-xl transition-all duration-300">
+            <div class="px-4 pt-2 pb-6 space-y-2">
+                <a href="#inicio" class="block px-3 py-2.5 rounded-md text-base font-semibold text-slate-700 hover:bg-brand-soft hover:text-brand-primary">Inicio</a>
+                <a href="#nosotros" class="block px-3 py-2.5 rounded-md text-base font-semibold text-slate-700 hover:bg-brand-soft hover:text-brand-primary">Nosotros</a>
+                <a href="#servicios" class="block px-3 py-2.5 rounded-md text-base font-semibold text-slate-700 hover:bg-brand-soft hover:text-brand-primary">Servicios</a>
+                <a href="#gimnasio" class="block px-3 py-2.5 rounded-md text-base font-semibold text-slate-700 hover:bg-brand-soft hover:text-brand-primary">Gimnasio Fresno</a>
+                <a href="#planes" class="block px-3 py-2.5 rounded-md text-base font-semibold text-slate-700 hover:bg-brand-soft hover:text-brand-primary">Tarifas</a>
+                <a href="#contacto" class="block w-full text-center mt-4 bg-brand-primary text-white px-4 py-3 rounded-md font-bold text-base uppercase tracking-wider shadow">Contacto y Reservas</a>
+            </div>
         </div>
     </nav>
  
-    <header class="hero" id="inicio">
-        <div>
-            <div class="hero-title-wrapper">
-                <img src="Logo.jpeg" alt="Logo DArMa Sport" class="hero-logo">
-                <h1>Bienvenido a DArMa sport</h1>
+    <!-- HERO -->
+    <header class="relative min-h-screen flex items-center justify-center sporty-clip bg-brand-dark text-white px-4 pt-24 pb-16 overflow-hidden" id="inicio">
+        <!-- Fondo decorativo deportivo sutil -->
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent pointer-events-none"></div>
+        <div class="absolute -bottom-12 -right-12 w-96 h-96 bg-brand-light/20 rounded-full blur-3xl pointer-events-none"></div>
+        
+        <div class="relative max-w-5xl mx-auto text-center z-10 flex flex-col items-center">
+            <!-- Badge / Logo Wrapper -->
+            <div class="flex flex-col sm:flex-row items-center gap-6 mb-8 mt-6">
+                <img src="Logo.jpeg" alt="Logo DArMa Sport" class="h-24 sm:h-28 w-auto rounded-2xl border-4 border-white/20 shadow-2xl transition-transform hover:scale-105">
+                <div class="text-left max-sm:text-center">
+                    <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight leading-none">Bienvenido a <span class="text-transparent bg-clip-text bg-gradient-to-r from-green-300 to-brand-accent">DArMa sport</span></h1>
+                </div>
             </div>
-            <p>Mejoramos la salud y condición física en el Nordeste Segoviano, acercando el entrenamiento profesional a entornos rurales.</p>
-            <a href="#contacto" class="btn">Contactar</a>
-            <div class="hero-features">
-                <span>✓ Entrenamientos personalizados</span>
-                <span>✓ Grupos reducidos</span>
-                <span>✓ En plena naturaleza</span>
-                <span>✓ Profesional titulado</span>
+            
+            <p class="text-lg sm:text-xl text-slate-100 max-w-3xl leading-relaxed mb-10">
+                Mejoramos la salud y condición física en el Nordeste Segoviano, acercando el entrenamiento profesional a entornos rurales.
+            </p>
+            
+            <div class="flex flex-wrap gap-4 justify-center mb-12">
+                <a href="#contacto" class="px-8 py-4 bg-white text-brand-dark hover:bg-brand-accent hover:text-brand-dark rounded-xl font-bold uppercase tracking-wider transition-all shadow-lg hover:shadow-brand-accent/25 hover:-translate-y-1">Contactar</a>
+                <a href="#servicios" class="px-8 py-4 bg-brand-primary/50 text-white hover:bg-brand-primary hover:border-brand-accent border border-white/20 rounded-xl font-bold uppercase tracking-wider transition-all">Saber más</a>
+            </div>
+            
+            <!-- Features deportistas -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl w-full">
+                <div class="bg-white/5 border border-white/15 backdrop-blur-sm px-4 py-3 rounded-xl flex items-center justify-center gap-2">
+                    <span class="text-brand-accent font-bold">✓</span>
+                    <span class="text-sm font-medium text-slate-100">Personalizado</span>
+                </div>
+                <div class="bg-white/5 border border-white/15 backdrop-blur-sm px-4 py-3 rounded-xl flex items-center justify-center gap-2">
+                    <span class="text-brand-accent font-bold">✓</span>
+                    <span class="text-sm font-medium text-slate-100">Grupos reducidos</span>
+                </div>
+                <div class="bg-white/5 border border-white/15 backdrop-blur-sm px-4 py-3 rounded-xl flex items-center justify-center gap-2">
+                    <span class="text-brand-accent font-bold">✓</span>
+                    <span class="text-sm font-medium text-slate-100">Plena naturaleza</span>
+                </div>
+                <div class="bg-white/5 border border-white/15 backdrop-blur-sm px-4 py-3 rounded-xl flex items-center justify-center gap-2">
+                    <span class="text-brand-accent font-bold">✓</span>
+                    <span class="text-sm font-medium text-slate-100">Titulado Pro</span>
+                </div>
             </div>
         </div>
     </header>
  
-    <section id="nosotros">
-        <h2>👥 Nosotros</h2>
-        <p>Creemos en el movimiento como herramienta de salud, bienestar y autonomía.</p>
+    <!-- NOSOTROS -->
+    <section id="nosotros" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+            <span class="text-brand-light font-bold text-sm uppercase tracking-widest block mb-2">¿Quiénes somos?</span>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-4">👥 Nosotros</h2>
+            <div class="w-16 h-1 bg-brand-primary mx-auto mb-6 rounded-full"></div>
+            <p class="text-lg text-slate-600">Creemos en el movement como herramienta de salud, bienestar y autonomía.</p>
+        </div>
        
-        <div class="about-grid">
-            <div class="about-card">
-                <h3>Nuestra filosofía</h3>
-                <p>DArMa sport nace con la idea de acercar el fitness y la salud a municipios rurales, donde el acceso a servicios deportivos especializados es limitado.</p>
-                <p style="margin-top:1rem;">Trabajamos con cercanía, profesionalidad and compromiso. Nuestro objetivo es mejorar la calidad de vida a través del ejercicio físico seguro y adaptado a cada persona.</p>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+            <!-- Filosofía -->
+            <div class="bg-white rounded-3xl p-8 lg:p-10 shadow-lg border border-slate-100 flex flex-col justify-between hover:shadow-xl transition-shadow relative overflow-hidden group">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-brand-soft rounded-full -mr-16 -mt-16 transition-all group-hover:scale-110"></div>
+                <div class="relative">
+                    <h3 class="text-2xl font-bold text-slate-900 mb-4">Nuestra filosofía</h3>
+                    <p class="text-slate-600 leading-relaxed mb-4">DArMa sport nace con la idea de acercar el fitness y la salud a municipios rurales, donde el acceso a servicios deportivos especializados es limitado.</p>
+                    <p class="text-slate-600 leading-relaxed">Trabajamos con cercanía, profesionalidad y compromiso. Nuestro objetivo es mejorar la calidad de vida a través del ejercicio físico seguro y adaptado a cada persona.</p>
+                </div>
             </div>
            
-            <div class="about-card">
-                <h3>David</h3>
-                <p><strong>Graduado en CAFYD</strong>, Técnico Superior en Animación Deportiva, Entrenador Nacional de Fútbol, Monitor en varias disciplinas.</p>
-                <ul>
-                    <li>Monitor Deporte Social Adultos (4 cursos)</li>
-                    <li>Profesor Escuelas Deportivas (4 cursos)</li>
-                    <li>Monitor Campamentos Riaza (12 veranos)</li>
-                    <li>Entrenador Fútbol/Futsal (14 temporadas)</li>
-                </ul>
+            <!-- El Equipo -->
+            <div class="bg-brand-dark rounded-3xl p-8 lg:p-10 text-white shadow-xl relative overflow-hidden">
+                <div class="absolute bottom-0 right-0 w-48 h-48 bg-brand-light/10 rounded-full -mb-24 -mr-24 blur-2xl"></div>
+                
+                <div class="relative space-y-8">
+                    <!-- Perfil David -->
+                    <div>
+                        <div class="flex items-center gap-3 mb-3">
+                            <h3 class="text-2xl font-bold tracking-tight border-b-2 border-brand-accent/50 pb-1">David</h3>
+                        </div>
+                        <p class="text-slate-100 text-sm mb-4"><strong class="text-brand-accent">Graduado en CAFYD</strong>, Técnico Superior en Animación Deportiva, Entrenador Nacional de Fútbol, Monitor en varias disciplinas.</p>
+                        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-200">
+                            <li class="flex items-start gap-1.5"><span class="text-brand-accent font-bold">•</span> Monitor Deporte Social Adultos (4 cursos)</li>
+                            <li class="flex items-start gap-1.5"><span class="text-brand-accent font-bold">•</span> Profesor Escuelas Deportivas (4 cursos)</li>
+                            <li class="flex items-start gap-1.5"><span class="text-brand-accent font-bold">•</span> Monitor Campamentos Riaza (12 veranos)</li>
+                            <li class="flex items-start gap-1.5"><span class="text-brand-accent font-bold">•</span> Entrenador Fútbol/Futsal (14 temporadas)</li>
+                        </ul>
+                    </div>
 
-                <h3 style="margin-top: 1.5rem;">Marta</h3>
-                <p><strong>Graduada Fisioterapia</strong></p>
-                <ul>
-                    <li>Fisioterapeuta independiente</li>
-                </ul>
+                    <div class="border-t border-white/20 pt-6">
+                        <!-- Perfil Marta -->
+                        <div class="flex items-center gap-3 mb-3">
+                            <h3 class="text-2xl font-bold tracking-tight border-b-2 border-brand-accent/50 pb-1">Marta</h3>
+                        </div>
+                        <p class="text-slate-100 text-sm mb-2"><strong class="text-brand-accent">Graduada Fisioterapia</strong></p>
+                        <ul class="text-xs text-slate-200">
+                            <li class="flex items-start gap-1.5"><span class="text-brand-accent font-bold">•</span> Fisioterapeuta independiente</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
  
-    <section id="objetivos">
-        <h2>🎯 Objetivos</h2>
-        <div class="services-grid">
-            <div class="service-card">
-                <div class="service-header">
-                    <span class="icon">❤️</span>
-                    <h3>Salud rural</h3>
-                </div>
-                <p>Mejorar la salud general de la población rural</p>
+    <!-- OBJETIVOS -->
+    <section id="objetivos" class="py-16 bg-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-3xl font-extrabold text-slate-900 mb-3">🎯 Objetivos</h2>
+                <div class="w-12 h-1 bg-brand-primary mx-auto rounded-full"></div>
             </div>
-            <div class="service-card">
-                <div class="service-header">
-                    <span class="icon">🏃</span>
-                    <h3>Actividad regular</h3>
-                </div>
-                <p>Fomentar la actividad física como hábito</p>
-            </div>
-            <div class="service-card">
-                <div class="service-header">
-                    <span class="icon">🛡️</span>
-                    <h3>Prevención</h3>
-                </div>
-                <p>Prevenir lesiones y patologías del sedentarismo</p>
-            </div>
-            <div class="service-card">
-                <div class="service-header">
-                    <span class="icon">🤝</span>
-                    <h3>Comunidad</h3>
-                </div>
-                <p>Crear vínculos a través del deporte</p>
-            </div>
-        </div>
-    </section>
- 
-    <section id="servicios">
-        <h2>💪 Servicios</h2>
-        <div class="services-grid">
-            <div class="service-card">
-                <div class="service-header">
-                    <span class="icon">👤</span>
-                    <h3>Entrenamiento Personal</h3>
-                </div>
-                <p>Plan individual adaptado a edad, condición física y objetivos.</p>
-            </div>
-            <div class="service-card">
-                <div class="service-header">
-                    <span class="icon">🎾</span>
-                    <h3>Parejas - Raqueta</h3>
-                </div>
-                <p>Preparación y mejora en pádel, tenis o frontenis.</p>
-            </div>
-            <div class="service-card">
-                <div class="service-header">
-                    <span class="icon">👥</span>
-                    <h3>Grupos Reducidos</h3>
-                </div>
-                <p>Sesiones dinámicas en grupos pequeños homogéneos.</p>
-            </div>
-            <div class="service-card">
-                <div class="service-header">
-                    <span class="icon">🩺</span>
-                    <h3>Programas de Salud</h3>
-                </div>
-                <p>Ejercicio para mayores, readaptación y mejora funcional.</p>
-            </div>
-            <div class="service-card">
-                <div class="service-header">
-                    <span class="icon">💆</span>
-                    <h3>Fisioterapia</h3>
-                </div>
-                <p>Diagnóstico, tratamiento articular, restauración y prevención.</p>
-            </div>
-            <div class="service-card">
-                <div class="service-header">
-                    <span class="icon">🌲</span>
-                    <h3>Aire Libre</h3>
-                </div>
-                <p>Entrenamientos en el entorno natural del Nordeste.</p>
-            </div>
-            <div class="service-card">
-                <div class="service-header">
-                    <span class="icon">⚽</span>
-                    <h3>Equipos Competición</h3>
-                </div>
-                <p>Entrenamiento, dirección y gestión de equipos.</p>
-            </div>
-    <section id="gimnasio" style="text-align: center; padding: 4rem 1rem;">
-        <h2>🏋️ Gimnasio Fresno</h2>
-        <p style="margin-bottom: 1.5rem;">Actividades, horarios y tarifas del Gimnasio de Fresno de Cantespino.</p>
-        <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-            <!-- Botón Horarios: Verde vibrante -->
-            <a href="Horarios_Tarifas.png" target="_blank" rel="noopener noreferrer" class="btn" style="background-color: #22c55e; color: white;">Horarios y Tarifas</a>
             
-            <!-- Botón Resultados: Tamaño reducido y tono marrón discreto -->
-            <a href="https://darma-sport.github.io/Padel-Fresno/" target="_blank" rel="noopener noreferrer" class="btn" style="background-color: #bc8f8f; color: white; padding: 0.7rem 1.2rem; font-size: 0.9rem;">Ver Resultados de I Torneo Pádel Fresno de Cantespino</a>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Salud rural -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/60 hover:shadow-md transition-all hover:-translate-y-1 text-center">
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Salud rural</h3>
+                    <p class="text-sm text-slate-600">Mejorar la salud general de la población rural</p>
+                </div>
+                <!-- Actividad regular -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/60 hover:shadow-md transition-all hover:-translate-y-1 text-center">
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Actividad regular</h3>
+                    <p class="text-sm text-slate-600">Fomentar la actividad física como hábito constante</p>
+                </div>
+                <!-- Prevención -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/60 hover:shadow-md transition-all hover:-translate-y-1 text-center">
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Prevención</h3>
+                    <p class="text-sm text-slate-600">Prevenir lesiones y patologías derivadas del sedentarismo</p>
+                </div>
+                <!-- Comunidad -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/60 hover:shadow-md transition-all hover:-translate-y-1 text-center">
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Comunidad</h3>
+                    <p class="text-sm text-slate-600">Crear vínculos y socialización a través del deporte</p>
+                </div>
+            </div>
+        </div>
+    </section>
+ 
+    <!-- SERVICIOS -->
+    <section id="servicios" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+            <span class="text-brand-light font-bold text-sm uppercase tracking-widest block mb-2">Nuestras Disciplinas</span>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-4">📋 Servicios</h2>
+            <div class="w-16 h-1 bg-brand-primary mx-auto mb-6 rounded-full"></div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- 1. Entrenamiento Personal -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:border-brand-primary/20 transition-all text-center">
+                <h3 class="text-lg font-bold text-slate-900 mb-2">Entrenamiento Personal</h3>
+                <p class="text-sm text-slate-600 leading-relaxed">Plan individual adaptado a edad, condición física y objetivos.</p>
+            </div>
+            
+            <!-- 2. Parejas - Raqueta -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:border-brand-primary/20 transition-all text-center">
+                <h3 class="text-lg font-bold text-slate-900 mb-2">Parejas - Raqueta</h3>
+                <p class="text-sm text-slate-600 leading-relaxed">Preparación y mejora técnica/táctica en pádel, tenis o frontenis.</p>
+            </div>
+
+            <!-- 3. Grupos Reducidos -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:border-brand-primary/20 transition-all text-center">
+                <h3 class="text-lg font-bold text-slate-900 mb-2">Grupos Reducidos</h3>
+                <p class="text-sm text-slate-600 leading-relaxed">Sesiones dinámicas en grupos pequeños con objetivos homogéneos.</p>
+            </div>
+
+            <!-- 4. Programas de Salud -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:border-brand-primary/20 transition-all text-center">
+                <h3 class="text-lg font-bold text-slate-900 mb-2">Programas de Salud</h3>
+                <p class="text-sm text-slate-600 leading-relaxed">Ejercicio enfocado para mayores, readaptación y mejora de movilidad funcional.</p>
+            </div>
+
+            <!-- 5. Fisioterapia -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:border-brand-primary/20 transition-all text-center">
+                <h3 class="text-lg font-bold text-slate-900 mb-2">Fisioterapia (indep.)</h3>
+                <p class="text-sm text-slate-600 leading-relaxed">Diagnóstico, tratamiento articular, restauración de movilidad y prevención.</p>
+            </div>
+
+            <!-- 6. Aire Libre -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:border-brand-primary/20 transition-all text-center">
+                <h3 class="text-lg font-bold text-slate-900 mb-2">Aire Libre</h3>
+                <p class="text-sm text-slate-600 leading-relaxed">Entrenamientos aprovechando el precioso entorno natural de Nordeste Segoviano.</p>
+            </div>
+
+            <!-- 7. Equipos de Competición -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:border-brand-primary/20 transition-all text-center">
+                <h3 class="text-lg font-bold text-slate-900 mb-2">Equipos Competición</h3>
+                <p class="text-sm text-slate-600 leading-relaxed">Entrenamiento específico, dirección técnica y gestión deportiva integral.</p>
+            </div>
         </div>
     </section>
 
-    <section id="planes">
-        <div>
-            <h2>📦 Otros Planes y Tarifas</h2>
-            <p>Precios base. Consulta descuentos por edad y bonos mensuales.</p>
+    <!-- GIMNASIO FRESNO -->
+    <section id="gimnasio" class="py-20 bg-brand-dark text-white relative overflow-hidden sporty-clip-reverse">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,_var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent pointer-events-none"></div>
+        
+        <div class="max-w-4xl mx-auto px-4 text-center relative z-10">
+            <span class="text-brand-accent font-bold text-sm uppercase tracking-widest block mb-2">Instalación Municipal</span>
+            <h2 class="text-3xl sm:text-5xl font-extrabold mb-4">🏋️ Gimnasio Fresno</h2>
+            <p class="text-slate-100 max-w-2xl mx-auto mb-10 text-base sm:text-lg">Actividades, horarios y tarifas del Gimnasio de Fresno de Cantespino.</p>
+            
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4 max-w-2xl mx-auto">
+                <!-- Botón Horarios -->
+                <a href="Horarios_Tarifas.png" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#22c55e] hover:bg-green-500 text-white font-bold px-8 py-4 rounded-xl shadow-lg shadow-green-600/20 hover:shadow-green-600/40 hover:-translate-y-0.5 transition-all">
+                    <i data-lucide="calendar" class="w-5 h-5"></i>
+                    Horarios y Tarifas
+                </a>
+                
+                <!-- Botón Resultados -->
+                <a href="https://darma-sport.github.io/Padel-Fresno/" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#bc8f8f] hover:bg-[#c99f9f] text-white font-semibold px-6 py-3.5 rounded-xl text-sm transition-all hover:-translate-y-0.5">
+                    <i data-lucide="trophy" class="w-4 h-4"></i>
+                    Resultados I Torneo Pádel Fresno
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- PLANES Y TARIFAS -->
+    <section id="planes" class="py-24 bg-brand-soft">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-brand-light font-bold text-sm uppercase tracking-widest block mb-2">Invierte en tu salud</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-4">Otros Planes y Tarifas</h2>
+                <div class="w-16 h-1 bg-brand-primary mx-auto mb-6 rounded-full"></div>
+                <p class="text-slate-600">Precios base con opciones adaptadas. Consulta descuentos por edad y bonos mensuales.</p>
+            </div>
            
-            <div class="plans-grid">
-                <div class="plan-card">
-                    <h3>Plan Individual</h3>
-                    <p>Entrenamiento personalizado 1 a 1 ... <strong>25 €/sesión</strong></p>
+            <!-- Planes Grid (Altamente compactados, sin iconos, letra reducida y espacio estrecho al precio) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
+                <!-- Plan Individual -->
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200/60 flex flex-col justify-between hover:scale-[1.01] transition-all duration-300">
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-900 mb-0.5">Plan Individual</h3>
+                        <p class="text-slate-500 text-[11px] leading-snug mb-2">Entrenamiento altamente personalizado adaptado 1 a 1 de forma exclusiva.</p>
+                    </div>
+                    <div class="pt-2 border-t border-slate-100 flex items-baseline gap-0.5 leading-none">
+                        <span class="text-lg font-extrabold text-brand-primary">25€</span>
+                        <span class="text-slate-400 text-[10px]">/sesión</span>
+                    </div>
                 </div>
-                <div class="plan-card">
-                    <h3>Plan Parejas</h3>
-                    <p>Deportes de raqueta ... <strong>28 €/sesión</strong></p>
+
+                <!-- Plan Parejas -->
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200/60 flex flex-col justify-between hover:scale-[1.01] transition-all duration-300">
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-900 mb-0.5">Plan Parejas</h3>
+                        <p class="text-slate-500 text-[11px] leading-snug mb-2">Especialmente diseñado para deportes de raqueta (Pádel, tenis, frontenis...).</p>
+                    </div>
+                    <div class="pt-2 border-t border-slate-100 flex items-baseline gap-0.5 leading-none">
+                        <span class="text-lg font-extrabold text-brand-primary">28€</span>
+                        <span class="text-slate-400 text-[10px]">/sesión</span>
+                    </div>
                 </div>
-                <div class="plan-card">
-                    <h3>Grupos 5-10</h3>
-                    <p>Sesiones grupales reducidas ... <strong>25 €/sesión</strong> (+2,00 € por alumno)</p>
+
+                <!-- Grupos 5-10 -->
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200/60 flex flex-col justify-between hover:scale-[1.01] transition-all duration-300">
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-900 mb-0.5">Grupos 5-10</h3>
+                        <p class="text-slate-500 text-[11px] leading-snug mb-1.5">Sesiones grupales dinámicas en grupos reducidos para motivarse juntos.</p>
+                    </div>
+                    <div class="pt-2 border-t border-slate-100 leading-none">
+                        <div class="flex items-baseline gap-0.5">
+                            <span class="text-lg font-extrabold text-brand-primary">25€</span>
+                            <span class="text-slate-400 text-[10px]">/sesión</span>
+                        </div>
+                        <p class="text-[9px] text-brand-light font-bold mt-0.5">+2,00€/alumnoextra</p>
+                    </div>
                 </div>
-                <div class="plan-card">
-                    <h3>Equipos Competición</h3>
-                    <p>Entrenamientos, partidos y desplazamientos ... <strong>15 €/h</strong> (máx. 250 €/mes o 2.000 €/temporada)</p>
+
+                <!-- Equipos Competición -->
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200/60 flex flex-col justify-between hover:scale-[1.01] transition-all duration-300">
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-900 mb-0.5">Equipos Competición</h3>
+                        <p class="text-slate-500 text-[11px] leading-snug mb-1.5">Planificación de entrenamientos directivos, partidos y desplazamientos.</p>
+                    </div>
+                    <div class="pt-2 border-t border-slate-100 leading-none">
+                        <div class="flex items-baseline gap-0.5">
+                            <span class="text-lg font-extrabold text-brand-primary">15€</span>
+                            <span class="text-slate-400 text-[10px]">/hora</span>
+                        </div>
+                        <p class="text-[9px] text-brand-light font-bold mt-0.5">Máx.250€/mes o 2000€/temp.</p>
+                    </div>
                 </div>
             </div>
            
-            <div class="discounts">
-               <div class="discount-box">
-                   <h4 style="margin-bottom: 0.2rem;">Descuentos por edad y empadronamiento</h4>
-                   <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 0.8rem;">(no acumulativos)</p>
-                   <p><strong>Jóvenes (&lt;30 años):</strong> 10% dto.</p>
-                   <p><strong>Senior (&gt;60 años):</strong> 20% dto.</p>
-                   <p><strong>Empadronados en la comarca:</strong> 20% dto.</p>
+            <!-- Descuentos y Promos con interlineado reducido -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
+               <!-- Caja Descuentos Edad -->
+               <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/60 relative overflow-hidden">
+                   <div class="absolute right-0 bottom-0 w-32 h-32 bg-slate-50 rounded-full -mr-10 -mb-10"></div>
+                   <div class="relative">
+                       <h4 class="text-base font-bold text-brand-primary mb-0.5 flex items-center gap-2">
+                           Descuentos por edad y empadronamiento
+                       </h4>
+                       <span class="text-[10px] text-slate-400 block mb-3 leading-none">(No acumulativos)</span>
+                       
+                       <div class="space-y-1.5 leading-tight">
+                           <div class="flex items-center justify-between border-b border-slate-100 pb-1.5">
+                               <span class="text-slate-700 font-medium text-xs">Jóvenes (&lt;30 años)</span>
+                               <span class="bg-brand-soft text-brand-primary font-extrabold px-2 py-0.5 rounded text-[10px] leading-none">10% Dto.</span>
+                           </div>
+                           <div class="flex items-center justify-between border-b border-slate-100 pb-1.5">
+                               <span class="text-slate-700 font-medium text-xs">Senior (&gt;60 años)</span>
+                               <span class="bg-brand-soft text-brand-primary font-extrabold px-2 py-0.5 rounded text-[10px] leading-none">20% Dto.</span>
+                           </div>
+                           <div class="flex items-center justify-between">
+                               <span class="text-slate-700 font-medium text-xs">Empadronados en la comarca</span>
+                               <span class="bg-brand-soft text-brand-primary font-extrabold px-2 py-0.5 rounded text-[10px] leading-none">20% Dto.</span>
+                           </div>
+                       </div>
+                   </div>
                </div>
-               <div class="discount-box">
-                   <h4>Bonos Prepago</h4>
-                   <p><strong>Quincenal (4 sesiones):</strong> 10% dto.</p>
-                    <p><strong>Mensual (8 sesiones.):</strong> 15% dto.</p>
-                    <p><strong>Trimestral (25 sesiones):</strong> 20% dto.</p>
-                </div>
+               
+               <!-- Caja Bonos Prepago -->
+               <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/60 relative overflow-hidden">
+                   <div class="absolute right-0 bottom-0 w-32 h-32 bg-slate-50 rounded-full -mr-10 -mb-10"></div>
+                   <div class="relative">
+                       <h4 class="text-base font-bold text-brand-primary mb-3.5 flex items-center gap-2">
+                           Bonos Prepago
+                       </h4>
+                       
+                       <div class="space-y-1.5 leading-tight">
+                           <div class="flex items-center justify-between border-b border-slate-100 pb-1.5">
+                               <span class="text-slate-700 font-medium text-xs">Quincenal <span class="text-slate-400 text-[10px] font-normal">(4 sesiones)</span></span>
+                               <span class="bg-emerald-50 text-emerald-700 font-extrabold px-2 py-0.5 rounded text-[10px] leading-none">10% Dto.</span>
+                           </div>
+                           <div class="flex items-center justify-between border-b border-slate-100 pb-1.5">
+                               <span class="text-slate-700 font-medium text-xs">Mensual <span class="text-slate-400 text-[10px] font-normal">(8 sesiones)</span></span>
+                               <span class="bg-emerald-50 text-emerald-700 font-extrabold px-2 py-0.5 rounded text-[10px] leading-none">15% Dto.</span>
+                           </div>
+                           <div class="flex items-center justify-between">
+                               <span class="text-slate-700 font-medium text-xs">Trimestral <span class="text-slate-400 text-[10px] font-normal">(25 sesiones)</span></span>
+                               <span class="bg-emerald-50 text-emerald-700 font-extrabold px-2 py-0.5 rounded text-[10px] leading-none">20% Dto.</span>
+                           </div>
+                       </div>
+                   </div>
+               </div>
             </div>
             
-            <ul class="condiciones-list">
-                <li><strong>Promoción IVA incluido</strong></li>
-                <li>Duración de sesiones una (1) hora.</li>
-                <li>Días y hora de sesiones previo concierto.</li>
-                <li>Planificación inicial dos (2) días por semana.</li>
-                <li>Alquiler y reserva de otras pistas por usuarios.</li>
-                <li>Aforo limitado con preferencia a grupos.</li>
-                <li>Facturación y cobros por adelantado.</li>
-                <li>Bono trimestral (25) facturable en tres (3) meses.</li>
-                <li>Las ausencias justificadas del monitor se compensarán en días o económicamente.</li>
-            </ul>
+            <!-- Condiciones -->
+            <div class="bg-white/80 border border-slate-200/60 p-6 rounded-2xl max-w-4xl mx-auto">
+                <h4 class="text-xs font-bold text-slate-800 mb-4 uppercase tracking-wider flex items-center gap-2">
+                    <i data-lucide="info" class="w-4 h-4 text-brand-primary"></i>
+                    Condiciones del servicio
+                </h4>
+                <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-xs text-slate-600 list-none">
+                    <li class="flex items-start gap-2"><span class="text-brand-primary font-bold">▪</span> <span><strong>Promoción IVA incluido</strong></span></li>
+                    <li class="flex items-start gap-2"><span class="text-brand-primary font-bold">▪</span> <span>Duración de sesiones una (1) hora.</span></li>
+                    <li class="flex items-start gap-2"><span class="text-brand-primary font-bold">▪</span> <span>Días y hora de sesiones previo concierto.</span></li>
+                    <li class="flex items-start gap-2"><span class="text-brand-primary font-bold">▪</span> <span>Planificación inicial dos (2) días por semana.</span></li>
+                    <li class="flex items-start gap-2"><span class="text-brand-primary font-bold">▪</span> <span>Alquiler y reserva de otras pistas por usuarios.</span></li>
+                    <li class="flex items-start gap-2"><span class="text-brand-primary font-bold">▪</span> <span>Aforo limitado con preferencia a grupos.</span></li>
+                    <li class="flex items-start gap-2"><span class="text-brand-primary font-bold">▪</span> <span>Facturación y cobros por adelantado.</span></li>
+                    <li class="flex items-start gap-2"><span class="text-brand-primary font-bold">▪</span> <span>Bono trimestral (25) facturable en tres (3) meses.</span></li>
+                    <li class="flex items-start gap-2 class=md:col-span-2"><span class="text-brand-primary font-bold">▪</span> <span>Las ausencias justificadas del monitor se compensarán en días o económicamente.</span></li>
+                </ul>
+            </div>
         </div>
     </section>
 
-    <section id="contacto" style="padding-top: 3rem; padding-bottom: 3rem;">
-        <h2 style="margin-bottom: 0.5rem;">📞 Contacto y reservas</h2>
-        <p style="color: rgba(255,255,255,0.9); margin-bottom: 1.5rem;">Para más información, contáctanos</p>
-       
-        <div class="contact-methods" style="margin-top: 0; margin-bottom: 1.5rem;">
-            <div class="contact-item">
-                📱 <a href="https://wa.me/34608759674" target="_blank" rel="noopener noreferrer">WhatsApp: 608 759 674</a>
+    <!-- CONTACTO -->
+    <section id="contacto" class="py-20 bg-brand-dark text-white relative overflow-hidden">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent pointer-events-none"></div>
+        
+        <div class="max-w-4xl mx-auto px-4 relative z-10 text-center">
+            <span class="text-brand-accent font-bold text-sm uppercase tracking-widest block mb-2">Comienza Hoy Mismo</span>
+            <h2 class="text-3xl sm:text-5xl font-extrabold mb-4">📞 Contacto y reservas</h2>
+            <p class="text-slate-100 max-w-lg mx-auto mb-12 text-sm sm:text-base">Para más información o agendar tu sesión de entrenamiento, no dudes en contactarnos.</p>
+           
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                <!-- WhatsApp -->
+                <a href="https://wa.me/34608759674" target="_blank" rel="noopener noreferrer" class="bg-white/5 border border-white/15 p-6 rounded-2xl flex flex-col items-center justify-center hover:bg-white/10 transition-colors group">
+                    <div class="w-12 h-12 bg-green-500/20 text-green-300 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i data-lucide="message-square" class="w-6 h-6"></i>
+                    </div>
+                    <span class="text-xs text-slate-200 mb-1">WhatsApp directo</span>
+                    <span class="font-bold text-white text-sm">608 759 674</span>
+                </a>
+
+                <!-- Correo -->
+                <div class="bg-white/5 border border-white/15 p-6 rounded-2xl flex flex-col items-center justify-center relative group">
+                    <div class="w-12 h-12 bg-blue-500/20 text-blue-300 rounded-full flex items-center justify-center mb-4">
+                        <i data-lucide="mail" class="w-6 h-6"></i>
+                    </div>
+                    <span class="text-xs text-slate-200 mb-1">Correo Electrónico</span>
+                    <a href="mailto:darmadeportes@gmail.com" class="font-bold text-white text-sm hover:underline mb-2">darmadeportes@gmail.com</a>
+                    
+                    <button onclick="copiarEmail()" class="bg-brand-primary hover:bg-brand-light text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors border border-white/10">
+                        <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                        Copiar correo
+                    </button>
+                    <span id="copy-msg" class="absolute bottom-2 bg-emerald-600 text-white text-[10px] px-2 py-0.5 rounded shadow-md hidden">¡Copiado!</span>
+                </div>
+
+                <!-- Web -->
+                <a href="https://darma-sport.github.io/servicios/" target="_blank" rel="noopener noreferrer" class="bg-white/5 border border-white/15 p-6 rounded-2xl flex flex-col items-center justify-center hover:bg-white/10 transition-colors group">
+                    <div class="w-12 h-12 bg-brand-accent/20 text-brand-accent rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i data-lucide="globe" class="w-6 h-6"></i>
+                    </div>
+                    <span class="text-xs text-slate-200 mb-1">Visita nuestra web</span>
+                    <span class="font-bold text-white text-sm">www.DARMA</span>
+                </a>
             </div>
-            <div class="contact-item">
-                📧 <a href="mailto:darmadeportes@gmail.com">darmadeportes@gmail.com</a>
-                <button onclick="copiarEmail()" class="copy-btn" title="Copiar correo al portapapeles">📋 Copiar</button>
-                <span id="copy-msg" style="display: none; font-size: 0.9rem; color: #a5d6a7; margin-left: 0.5rem;">¡Copiado!</span>
+
+            <!-- Botón acción WhatsApp -->
+            <div class="mb-14">
+                <a href="https://wa.me/34608759674?text=Hola,%20quiero%20información%20de%20entrenamientos" class="inline-flex items-center gap-2 bg-[#25d366] hover:bg-[#20ba5a] text-white font-bold px-8 py-4 rounded-2xl shadow-lg transition-transform hover:-translate-y-0.5" target="_blank" rel="noopener noreferrer">
+                    <i data-lucide="message-circle" class="w-5 h-5"></i>
+                    Solicitar información por WhatsApp
+                </a>
             </div>
-            <div class="contact-item">
-                🌐 <a href="https://darma-sport.github.io/servicios/" target="_blank" rel="noopener noreferrer">www.darma-sport</a>
+
+            <!-- Sección QR -->
+            <div class="bg-white/5 border border-white/15 p-8 rounded-3xl max-w-lg mx-auto flex flex-col items-center">
+                <p class="font-bold text-base text-slate-100 mb-6 leading-snug">Si deseas una prueba gratuita o presupuesto, pulsa o pincha en este QR</p>
+                <a href="https://forms.gle/8DFf1WHfeK2cBHhRA" target="_blank" rel="noopener noreferrer" class="relative group">
+                    <div class="absolute inset-0 bg-brand-accent/20 rounded-2xl blur-lg group-hover:blur-xl transition-all"></div>
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://forms.gle/8DFf1WHfeK2cBHhRA" class="relative w-36 h-36 bg-white p-3 rounded-2xl border-2 border-white/10 shadow-xl transition-transform group-hover:scale-105" alt="QR Formulario">
+                </a>
             </div>
         </div>
-
-        <div style="text-align:center; margin-bottom: 1.5rem;">
-            <a href="https://wa.me/34608759674?text=Hola,%20quiero%20información%20de%20entrenamientos" class="btn" target="_blank" rel="noopener noreferrer" style="padding: 0.75rem 1.5rem;">
-                Solicitud de información por WhatsApp
-            </a>
-        </div>
-
-        <div style="text-align:center;">
-            <p style="font-size:1.05rem;font-weight:bold;color:white; margin-bottom:0.5rem;">Si deseas una prueba gratuita o presupuesto, pulsa o pincha en este QR</p>
-            <a href="https://forms.gle/8DFf1WHfeK2cBHhRA" target="_blank" rel="noopener noreferrer">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://forms.gle/8DFf1WHfeK2cBHhRA" style="width:150px;max-width:90%;background:white;padding:8px;border-radius:10px;" alt="QR Formulario">
-            </a>
-        </div>
-
     </section>
 
-    <footer>
-        <p>© 2026 DArMa sport · Nordeste Segoviano</p>
-        <p style="margin-top: 0.5rem;">PROTECCION DE DATOS.- De acuerdo con lo establecido en el RGPD (mayo/2018), en la LOPD y los RD que la desarrollan, los datos aquí aportados serán incorporados a un fichero del que soy titular, con la finalidad de realizar las gestiones económicas y administrativas.</p>
-        <p style="margin-top: 0.5rem;">Todas las personas que en el registro figuran, tendrán la posibilidad de ejercitar sus derechos de rectificación, cancelación y oposición de sus datos mediante solicitud por correo electrónico.</p>
+    <!-- FOOTER (Fondo negro mate profundo, texto más legible y distancia reducida) -->
+    <footer class="bg-slate-950 text-slate-400 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Título / Copyright y Distancia reducida con pb-4 y mb-4 -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 pb-4 border-b border-white/5">
+                <p class="text-sm sm:text-base text-slate-300 font-bold tracking-wide">© 2026 DArMa sport · Nordeste Segoviano</p>
+            </div>
+            
+            <!-- Aviso legal unificado y más cerca del copyright -->
+            <div class="space-y-4 text-xs sm:text-sm leading-relaxed max-w-5xl text-slate-400">
+                <p><strong>PROTECCION DE DATOS.-</strong> De acuerdo con lo establecido en el RGPD (mayo/2018), en la LOPD y los RD que la desarrollan, los datos aquí aportados serán incorporados a un fichero del que soy titular, con la finalidad de realizar las gestiones económicas y administrativas.</p>
+                <p>Todas las personas que en el registro figuran, tendrán la posibilidad de ejercitar sus derechos de rectificación, cancelación y oposición de sus datos mediante solicitud por correo electrónico.</p>
+            </div>
+        </div>
     </footer>
  
     <script>
+        // Inicializar Lucide Icons
+        lucide.createIcons();
+
         function toggleMenu() {
-            document.getElementById('navMenu').classList.toggle('active');
+            const menu = document.getElementById('navMenu');
+            const menuIcon = document.getElementById('menuIcon');
+            const isHidden = menu.classList.contains('hidden');
+            
+            if (isHidden) {
+                menu.classList.remove('hidden');
+                menuIcon.setAttribute('data-lucide', 'x');
+            } else {
+                menu.classList.add('hidden');
+                menuIcon.setAttribute('data-lucide', 'menu');
+            }
+            lucide.createIcons(); // Recargar el icono actualizado
         }
        
-        // Cerrar menú al hacer clic en un enlace
-        document.querySelectorAll('nav a').forEach(link => {
+        // Cerrar menú móvil al hacer clic en un enlace
+        document.querySelectorAll('#navMenu a').forEach(link => {
             link.addEventListener('click', () => {
-                document.getElementById('navMenu').classList.remove('active');
+                document.getElementById('navMenu').classList.add('hidden');
+                document.getElementById('menuIcon').setAttribute('data-lucide', 'menu');
+                lucide.createIcons();
             });
         });
        
-        // Función para copiar el correo al portapapeles
+        // Función optimizada para copiar el correo al portapapeles
         function copiarEmail() {
             const email = "darmadeportes@gmail.com";
             const tempInput = document.createElement("input");
@@ -719,9 +569,9 @@
             document.body.removeChild(tempInput);
             
             const msg = document.getElementById("copy-msg");
-            msg.style.display = "inline";
+            msg.classList.remove("hidden");
             setTimeout(() => {
-                msg.style.display = "none";
+                msg.classList.add("hidden");
             }, 2000);
         }
     </script>
