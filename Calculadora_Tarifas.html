@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Tarifas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen p-4 md:p-8">
+
+    <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+        
+        <!-- Encabezado -->
+        <div class="bg-blue-600 p-6 text-white text-center">
+            <h1 class="text-2xl md:text-3xl font-bold">Calculadora de Tarifas</h1>
+            <p class="mt-2 text-blue-100">Consulta los precios según servicio y bonos</p>
+        </div>
+
+        <div class="p-6 md:p-8 space-y-6">
+            
+            <!-- Formulario -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Servicio -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-gray-700">Servicio</label>
+                    <select id="servicio" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
+                        <option value="gym">GYM Uso Libre</option>
+                        <option value="grupos">Entrenamiento Dirigido (Grupos)</option>
+                        <option value="parejas">Entrenamiento Dirigido (Parejas)</option>
+                        <option value="personal">Entrenamiento Dirigido (Personal)</option>
+                    </select>
+                </div>
+
+                <!-- Grupo de Edad -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-gray-700">Grupo de Edad</label>
+                    <select id="edad" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white disabled:bg-gray-100 disabled:text-gray-400">
+                        <option value="empadronado">Empadronados / Senior +60</option>
+                        <option value="general" selected>General Adultos (30-59)</option>
+                        <option value="joven">Jóvenes (18-29)</option>
+                    </select>
+                    <p id="avisoEdad" class="text-xs text-gray-500 hidden">Tarifa única para cualquier edad.</p>
+                </div>
+
+                <!-- Sesiones / Bonos -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-gray-700">Bonos descuento</label>
+                    <select id="sesiones" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
+                        <option value="1">1 Sesión (Sin dto.)</option>
+                        <option value="4">Quincenal - 4 Sesiones (10% dto.)</option>
+                        <option value="8">Mensual - 8 Sesiones (15% dto.)</option>
+                        <option value="25">Bono-25 - 25 Sesiones (20% dto.)</option>
+                    </select>
+                </div>
+
+                <!-- Número de Alumnos -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-gray-700">Número de Alumnos</label>
+                    <input type="number" id="alumnos" value="1" min="1" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:text-gray-400">
+                    <p id="avisoGrupos" class="text-xs text-red-500 hidden">Los grupos deben tener entre 5 y 10 alumnos.</p>
+                </div>
+
+            </div>
+
+            <!-- Tarjeta de Resultados -->
+            <div class="mt-8 bg-blue-50 rounded-xl p-6 border border-blue-100">
+                <h2 class="text-xl font-bold text-blue-900 mb-6 text-center">Resumen de Costes</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-white p-4 rounded-lg shadow-sm text-center border border-gray-100">
+                        <p class="text-sm text-gray-500 font-medium mb-1">Tarifa Conjunta</p>
+                        <p id="tarifaTotal" class="text-2xl font-bold text-blue-700">0,00 €</p>
+                        <p class="text-xs text-gray-400 mt-1">Total a pagar</p>
+                    </div>
+                    
+                    <div class="bg-white p-4 rounded-lg shadow-sm text-center border border-gray-100">
+                        <p class="text-sm text-gray-500 font-medium mb-1">Coste por Alumno</p>
+                        <p id="costeAlumno" class="text-2xl font-bold text-green-600">0,00 €</p>
+                        <p class="text-xs text-gray-400 mt-1">Total / Alumnos</p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg shadow-sm text-center border border-gray-100">
+                        <p class="text-sm text-gray-500 font-medium mb-1">Coste Alumno/Sesión</p>
+                        <p id="costeAlumnoSesion" class="text-2xl font-bold text-purple-600">0,00 €</p>
+                        <p class="text-xs text-gray-400 mt-1">Total / Alumnos / Sesiones</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Condiciones Generales -->
+            <div class="mt-8 pt-6 border-t border-gray-200 text-xs text-gray-600">
+                <p class="font-bold text-gray-800 mb-2">Condiciones generales:</p>
+                <ul class="list-disc pl-5 space-y-1">
+                    <li>Duración de sesiones una (1) hora.</li>
+                    <li>Días y horas de sesiones previo concierto.</li>
+                    <li>Planificación inicial dos (2) días por semana.</li>
+                    <li>Alquiler y reserva de otras pistas por usuarios.</li>
+                    <li>Aforo limitado con preferencia a grupos.</li>
+                    <li>Facturación y cobros de grupos por adelantado.</li>
+                    <li>Bono trimestral (25) facturable en tres (3) meses.</li>
+                    <li>Las ausencias justificadas del monitor se compensarán en días o económicamente.</li>
+                </ul>
+            </div>
+
+            <!-- Botón Volver -->
+            <div class="mt-8 flex justify-center">
+                <a href="https://darma-sport.github.io/servicios/" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 shadow-sm transition-colors duration-200">
+                    Volver
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Referencias a los elementos del DOM
+        const servicioEl = document.getElementById('servicio');
+        const edadEl = document.getElementById('edad');
+        const sesionesEl = document.getElementById('sesiones');
+        const alumnosEl = document.getElementById('alumnos');
+        
+        const avisoEdad = document.getElementById('avisoEdad');
+        const avisoGrupos = document.getElementById('avisoGrupos');
+
+        const tarifaTotalEl = document.getElementById('tarifaTotal');
+        const costeAlumnoEl = document.getElementById('costeAlumno');
+        const costeAlumnoSesionEl = document.getElementById('costeAlumnoSesion');
+
+        const formatoMoneda = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' });
+
+        // Manejar cambios de restricciones según el servicio
+        function actualizarRestricciones() {
+            const servicio = servicioEl.value;
+
+            if (servicio === 'personal') {
+                alumnosEl.value = 1;
+                alumnosEl.disabled = true;
+                edadEl.disabled = true;
+                avisoEdad.classList.remove('hidden');
+                alumnosEl.removeAttribute('max');
+            } else if (servicio === 'parejas') {
+                alumnosEl.value = 2;
+                alumnosEl.disabled = true;
+                edadEl.disabled = true;
+                avisoEdad.classList.remove('hidden');
+                alumnosEl.removeAttribute('max');
+            } else {
+                alumnosEl.disabled = false;
+                edadEl.disabled = false;
+                avisoEdad.classList.add('hidden');
+
+                if (servicio === 'grupos') {
+                    alumnosEl.min = 5;
+                    alumnosEl.max = 10;
+                    
+                    const valorActual = parseInt(alumnosEl.value);
+                    if (valorActual < 5) alumnosEl.value = 5;
+                    if (valorActual > 10) alumnosEl.value = 10;
+                } else {
+                    alumnosEl.min = 1;
+                    alumnosEl.removeAttribute('max');
+                }
+            }
+            calcular();
+        }
+
+        // Lógica de cálculo principal
+        function calcular() {
+            const servicio = servicioEl.value;
+            const edad = edadEl.value;
+            const sesiones = Number(sesionesEl.value);
+            let alumnos = parseInt(alumnosEl.value) || 1;
+
+            // Aviso visual y control estricto si se fuerzan menos de 5 o más de 10 alumnos en grupos
+            if (servicio === 'grupos') {
+                if (alumnos < 5 || alumnos > 10) {
+                    avisoGrupos.classList.remove('hidden');
+                } else {
+                    avisoGrupos.classList.add('hidden');
+                }
+                
+                // Forzamos los límites internamente para no generar precios erróneos 
+                // si el usuario escribe un número fuera de rango manualmente.
+                if (alumnos < 5) alumnos = 5;
+                if (alumnos > 10) alumnos = 10;
+            } else {
+                avisoGrupos.classList.add('hidden');
+            }
+
+            let descuento = 0;
+            if (sesiones === 4) descuento = 0.10;
+            if (sesiones === 8) descuento = 0.15;
+            if (sesiones === 25) descuento = 0.20;
+
+            let total = 0;
+
+            if (servicio === 'gym') {
+                let base = 6; // General
+                if (edad === 'empadronado') base = 5;
+                if (edad === 'joven') base = 5.5;
+                total = base * sesiones * (1 - descuento) * alumnos;
+                
+            } else if (servicio === 'personal') {
+                total = 25 * sesiones * (1 - descuento);
+                
+            } else if (servicio === 'parejas') {
+                total = 28 * sesiones * (1 - descuento);
+                
+            } else if (servicio === 'grupos') {
+                let baseFija = 25; // General
+                if (edad === 'empadronado') baseFija = 20;
+                if (edad === 'joven') baseFija = 22.5;
+                
+                const precioPorSesion = baseFija + (2 * alumnos);
+                total = precioPorSesion * sesiones * (1 - descuento);
+            }
+
+            // Actualizar interfaz
+            tarifaTotalEl.textContent = formatoMoneda.format(total);
+            costeAlumnoEl.textContent = formatoMoneda.format(total / alumnos);
+            costeAlumnoSesionEl.textContent = formatoMoneda.format((total / alumnos) / sesiones);
+        }
+
+        // Asignar eventos
+        servicioEl.addEventListener('change', actualizarRestricciones);
+        edadEl.addEventListener('change', calcular);
+        sesionesEl.addEventListener('change', calcular);
+        alumnosEl.addEventListener('input', calcular);
+        alumnosEl.addEventListener('change', calcular);
+
+        // Inicializar
+        actualizarRestricciones();
+    </script>
+
+</body>
+</html>
