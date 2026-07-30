@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Darma / FresnoGYM - Gestión de Reservas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .custom-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .hidden-content { display: none; }
+        
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Estilos estilo Google Calendar */
+        .calendar-grid-week { display: grid; grid-template-columns: 42px repeat(7, minmax(0, 1fr)); }
+        .calendar-grid-day { display: grid; grid-template-columns: 55px 1fr; }
+        .calendar-grid-month { display: grid; grid-template-columns: repeat(7, 1fr); }
+        
+        .time-cell { border-right: 1px solid #e2e8f0; border-bottom: 1px solid #f1f5f9; text-align: right; padding-right: 4px; font-size: 0.7rem; color: #64748b; position: relative; }
+        .time-cell span { position: absolute; top: -8px; right: 4px; background: #ffffff; padding: 0 2px; font-weight: 500;}
+        .grid-cell { border-right: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; min-height: 56px; padding: 2px; position: relative; transition: background 0.2s; }
+        .grid-cell:hover { background: #f8fafc; }
+        
+        .slot-chip { border-radius: 6px; padding: 4px; font-size: 0.7rem; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05); width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
+        .slot-chip:active { transform: scale(0.97); }
+        
+        .slot-disponible { background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .slot-parcial { background-color: #e0f2fe; color: #075985; border: 1px solid #bae6fd; }
+        .slot-completo { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+    </style>
+</head>
+<body class="min-h-screen pb-12">
+
+    <!-- Modal de Inicialización -->
+    <div id="startup-overlay" class="fixed inset-0 bg-slate-900/95 backdrop-blur-md z-[100] hidden items-center justify-center p-4 fade-in">
+        <div class="bg-white rounded-3xl p-8 shadow-2xl max-w-md w-full text-center">
+            <h2 id="startup-title" class="text-2xl font-bold text-slate-800 mb-2">Error de Carga</h2>
+            <p id="startup-desc" class="text-slate-500 mb-6 text-sm">No se pudo cargar automáticamente el archivo <b>fresnogym_backup.json</b>. Por favor, selecciona el archivo de datos manualmente.</p>
+            <input type="file" id="file-init" accept=".json" class="hidden" onchange="importarDatos(event, true)">
+            <button onclick="document.getElementById('file-init').click()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-xl w-full shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2">
+                📂 Cargar Backup JSON
+            </button>
+            <button onclick="document.getElementById('startup-overlay').classList.add('hidden'); document.getElementById('startup-overlay').classList.remove('flex');" class="mt-6 text-slate-400 hover:text-slate-600 text-sm underline transition-all">
+                Continuar con calendario en blanco
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal de Login -->
+    <div id="modal-login" class="fixed inset-0 bg-slate-900/90 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-8 shadow-2xl max-w-sm w-full text-center fade-in relative">
+            <button onclick="cerrarLogin()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-2xl font-bold leading-none">✕</button>
+            <div class="h-20 w-20 mx-auto mb-4 bg-emerald-50 rounded-2xl flex items-center justify-center p-2 border border-emerald-100">
+                <span class="text-3xl font-black text-emerald-600">DA</span>
+            </div>
+            <h2 id="login-title" class="text-2xl font-bold text-slate-800 mb-2">Acceso Admin</h2>
+            <p class="text-slate-500 text-sm mb-6">Introduce el PIN de administración.</p>
+            <input type="password" id="pin-input" inputmode="numeric" placeholder="PIN" class="w-full text-center text-2xl tracking-[0.5em] border-2 border-slate-200 rounded-xl py-3 mb-4 focus:border-emerald-500 outline-none transition-all">
+            <button onclick="validarAcceso()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow-lg active:scale-95 transition-all">Entrar</button>
+            <p id="login-error" class="text-red-500 text-xs mt-3 hidden font-medium"></p>
+        </div>
+    </div>
+
+    <!-- Contenido Principal -->
+    <div id="main-content">
+        
+        <!-- Banner Principal -->
+        <div class="max-w-7xl mx-auto px-2 sm:px-4 mt-4">
+            <div class="relative bg-slate-900 overflow-hidden rounded-3xl mb-8 shadow-xl">
+                <div class="absolute inset-0 bg-gradient-to-r from-emerald-900 to-slate-900 opacity-90"></div>
+                <div class="relative p-6 md:p-10 flex flex-col md:flex-row items-center justify-between z-10 gap-6">
+                    <div class="flex items-center gap-6 text-center md:text-left">
+                        <!-- Logo DARMA Imagen Adjunta -->
+                        <div class="bg-white p-2 rounded-2xl shadow-lg flex items-center justify-center border border-slate-100">
+                            <img src="./Logo.jpeg" alt="DARMA Logo" class="w-28 sm:w-36 md:w-44 h-auto rounded-xl object-contain">
+                        </div>
+                        <div>
+                            <h1 class="text-3xl md:text-4xl font-black text-white mb-1">Reservas FresnoGYM</h1>
+                            <p class="text-emerald-400 font-semibold tracking-widest uppercase text-xs md:text-sm">Salud • Ejercicio • Bienestar</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Controles Sesión -->
+                    <div class="flex flex-col gap-3 w-full md:w-auto">
+                        <div id="guest-controls" class="flex flex-col sm:flex-row gap-3">
+                            <button onclick="abrirLogin('admin')" class="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white border border-slate-600 rounded-xl font-bold shadow-lg transition-all flex items-center justify-center gap-2">⚙️ Acceso Admin</button>
+                        </div>
+                        <div id="logged-controls" class="hidden flex-col sm:flex-row gap-4 items-center bg-slate-800/50 p-3 rounded-2xl border border-slate-700">
+                            <div class="text-white text-center md:text-right px-2">
+                                <p class="text-[10px] text-slate-400 uppercase tracking-wider mb-0.5">Conectado como:</p>
+                                <p id="logged-user-name" class="font-bold text-lg text-emerald-400">---</p>
+                            </div>
+                            <button onclick="cerrarSesion()" class="w-full sm:w-auto px-5 py-2.5 bg-red-500 hover:bg-red-600 text-white rounded-xl font-bold shadow-lg transition-all flex items-center justify-center gap-2">🚪 Salir</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <main class="max-w-7xl mx-auto px-2 sm:px-4 fade-in">
+            
+            <!-- Panel Administrativo -->
+            <div id="admin-panel" class="mb-6 bg-slate-800 text-white p-4 rounded-2xl shadow-sm hidden items-center justify-between flex-wrap gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="bg-slate-700 p-2 rounded-lg text-emerald-400">⚙️</div>
+                    <div>
+                        <h2 class="font-bold text-sm uppercase tracking-widest text-emerald-400">Panel de Control</h2>
+                        <p class="text-xs text-slate-400">Haz clic en huecos vacíos para crear sesiones.</p>
+                    </div>
+                </div>
+                <div class="flex gap-2 flex-wrap items-center">
+                    <button onclick="exportarDatos()" class="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md transition-all flex items-center gap-2">
+                        <span>💾</span> Exportar JSON
+                    </button>
+                    <div class="relative inline-block">
+                        <input type="file" id="file-import-main" accept=".json,.csv" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="importarDatos(event)" title="Cargar backup JSON">
+                        <button class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md transition-all flex items-center gap-2 pointer-events-none">
+                            <span>📂</span> Importar Datos
+                        </button>
+                    </div>
+                    <button onclick="copiarSemana()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md transition-all flex items-center gap-2">
+                        <span>📑</span> Copiar semana
+                    </button>
+                </div>
+            </div>
+
+            <!-- Vista Calendario Tipo Google Calendar -->
+            <div class="bg-white rounded-3xl shadow-lg p-4 sm:p-6 border border-slate-100 mb-8">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+                    <div class="flex items-center gap-3">
+                        <button onclick="hoyCalendario()" class="px-4 py-2.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-bold text-sm rounded-xl transition-all shadow-sm">Hoy</button>
+                        <div class="flex items-center gap-3 mx-2">
+                            <button onclick="navegarCalendario(-1)" class="px-6 py-2 bg-white hover:bg-emerald-500 hover:text-white rounded-2xl transition-all text-slate-800 font-black text-3xl shadow-md border-2 border-slate-300 hover:border-emerald-500 active:scale-95 flex items-center justify-center min-w-[64px]" title="Anterior">←</button>
+                            <button onclick="navegarCalendario(1)" class="px-6 py-2 bg-white hover:bg-emerald-500 hover:text-white rounded-2xl transition-all text-slate-800 font-black text-3xl shadow-md border-2 border-slate-300 hover:border-emerald-500 active:scale-95 flex items-center justify-center min-w-[64px]" title="Siguiente">→</button>
+                        </div>
+                        <h2 id="calendar-title" class="text-xl sm:text-2xl font-black text-slate-800 capitalize ml-2">---</h2>
+                    </div>
+                    <div class="flex bg-slate-100 p-1 rounded-xl gap-1">
+                        <button id="btn-view-day" onclick="cambiarVista('day')" class="px-4 py-1.5 rounded-lg text-sm font-semibold transition-all text-slate-500">Día</button>
+                        <button id="btn-view-week" onclick="cambiarVista('week')" class="px-4 py-1.5 rounded-lg text-sm font-semibold transition-all bg-white text-emerald-600 shadow-sm">Semana</button>
+                        <button id="btn-view-month" onclick="cambiarVista('month')" class="px-4 py-1.5 rounded-lg text-sm font-semibold transition-all text-slate-500">Mes</button>
+                    </div>
+                </div>
+                
+                <!-- Grid del Calendario -->
+                <div id="calendar-grid" class="overflow-x-auto rounded-2xl border border-slate-200">
+                    <!-- JS genera la vista de día, semana o mes aquí -->
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 mb-12">
+                <!-- Formulario Solicitud -->
+                <section id="seccion-solicitud" class="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
+                    <div class="bg-slate-800 p-5 text-white font-bold flex items-center gap-2">
+                        <span>📝 Solicitud de Sesión</span>
+                    </div>
+                    <div class="p-8">
+                        <form id="registroForm" class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                            <div class="md:col-span-1">
+                                <label class="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1">Nombre y Apellidos</label>
+                                <input type="text" id="form-nombre" class="w-full border-2 border-slate-100 bg-slate-50 rounded-xl p-3 text-sm outline-none focus:border-emerald-500 transition-all" required>
+                            </div>
+                            <div class="md:col-span-1">
+                                <label class="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1">Teléfono</label>
+                                <input type="tel" id="form-tel" class="w-full border-2 border-slate-100 bg-slate-50 rounded-xl p-3 text-sm outline-none focus:border-emerald-500 transition-all" required>
+                            </div>
+                            <div class="md:col-span-1">
+                                <label class="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1">Fecha a Solicitar</label>
+                                <input type="date" id="form-fecha" class="w-full border-2 border-slate-100 bg-slate-50 rounded-xl p-3 text-sm outline-none focus:border-emerald-500 transition-all" required>
+                            </div>
+                            <div class="md:col-span-3">
+                                <label class="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1">Observaciones</label>
+                                <textarea id="form-obs" rows="2" class="w-full border-2 border-slate-100 bg-slate-50 rounded-xl p-3 text-sm outline-none focus:border-emerald-500 transition-all" placeholder="Indica el horario que deseas o cualquier otra duda..."></textarea>
+                            </div>
+                            <div class="md:col-span-3 flex justify-center mt-2">
+                                <button type="button" onclick="enviarWhatsApp()" class="w-full md:w-1/2 bg-green-500 hover:bg-green-600 text-white px-6 py-4 rounded-2xl font-bold text-sm shadow-lg transition-all flex items-center justify-center gap-2">
+                                    <span>📱 Solicitar Sesión (Notificar vía WhatsApp)</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+    </div>
+
+    <script>
+        const CONFIG = {
+            MAX: 10, // Aforo completo
+            WHATSAPP: "34608759674",
+            PIN_CENTRO: "1234", 
+            PIN_ADMIN: "9498",
+            START_HOUR: 10,
+            END_HOUR: 21
+        };
+
+        let modoAdmin = false;
+        let userLogged = null;
+        let loginMode = 'admin';
+        
+        // Estado persistente
+        let appData = {
+            slots: [],
+            clientes: []
+        };
+        let slots = appData.slots;
+        
+        // Estado del calendario
+        let currentDate = new Date();
+        let currentView = 'week'; // 'day', 'week', 'month'
+
+        // --- SISTEMA DE ALMACENAMIENTO (JSON / LOCALSTORAGE) ---
+        function guardarEstado() {
+            localStorage.setItem('fresnogym_db', JSON.stringify(appData));
+            slots = appData.slots;
+        }
+
+        async function cargarEstado() {
+            // Intenta cargar automáticamente fresnogym_backup.json al iniciar
+            try {
+                // Se añade un parámetro de tiempo para evitar el caché estricto de GitHub Pages
+                const res = await fetch('./fresnogym_backup.json?t=' + new Date().getTime());
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.slots) {
+                        appData = data;
+                        if (!appData.clientes) appData.clientes = [];
+                        slots = appData.slots;
+                        guardarEstado();
+                        document.getElementById('startup-overlay').classList.add('hidden');
+                        document.getElementById('startup-overlay').classList.remove('flex');
+                        renderCalendario();
+                        return;
+                    }
+                }
+                throw new Error("No se pudo obtener el archivo de backup");
+            } catch (err) {
+                // Si la carga directa falla, intenta restaurar desde localStorage si ya existía previo
+                const db = localStorage.getItem('fresnogym_db');
+                if (db) {
+                    try {
+                        appData = JSON.parse(db);
+                        slots = appData.slots;
+                        if(!appData.clientes) appData.clientes = [];
+                        document.getElementById('startup-overlay').classList.add('hidden');
+                        document.getElementById('startup-overlay').classList.remove('flex');
+                        renderCalendario();
+                        return;
+                    } catch(e) {}
+                }
+                
+                // Muestra la pantalla flotante únicamente cuando falla la carga automática y no hay backup previo
+                document.getElementById('startup-overlay').classList.remove('hidden');
+                document.getElementById('startup-overlay').classList.add('flex');
+            }
+        }
+
+        function exportarDatos() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "fresnogym_backup.json");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        }
+
+        function importarDatos(event, fromInit = false) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const content = e.target.result;
+                    if (file.name.endsWith('.json')) {
+                        const importedData = JSON.parse(content);
+                        if (importedData.slots) {
+                            appData = importedData;
+                            if(!appData.clientes) appData.clientes = [];
+                            slots = appData.slots;
+                            guardarEstado();
+                            
+                            if (fromInit) {
+                                document.getElementById('startup-overlay').classList.add('hidden');
+                                document.getElementById('startup-overlay').classList.remove('flex');
+                            }
+                            
+                            alert("✅ Datos JSON importados correctamente.");
+                            renderCalendario();
+                        } else alert("❌ Formato JSON no válido.");
+                    }
+                } catch(err) {
+                    alert("❌ Error procesando el archivo: " + err.message);
+                }
+                event.target.value = '';
+            };
+            reader.readAsText(file);
+        }
+
+        // --- INICIO ---
+        window.onload = async () => {
+            const savedPin = localStorage.getItem('darma_pin');
+            const savedMode = localStorage.getItem('darma_mode');
+            
+            if (savedPin && savedMode === 'admin' && savedPin === CONFIG.PIN_ADMIN) {
+                modoAdmin = true;
+            } else {
+                localStorage.removeItem('darma_pin');
+                localStorage.removeItem('darma_mode');
+            }
+            
+            actualizarUIModo();
+            
+            const dateInput = document.getElementById('form-fecha');
+            if(dateInput) dateInput.value = formatDate(new Date());
+            
+            await cargarEstado();
+        };
+
+        // --- UTILIDADES DE FECHA ---
+        function formatDate(date) {
+            // Usa fecha local real para evitar el desfase de 1 día provocado por toISOString() UTC
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function parseDateStr(dateStr) {
+            const parts = dateStr.split('-');
+            return new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+        }
+
+        function getStartOfWeek(date) {
+            let d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+            let day = d.getDay();
+            let diff = d.getDate() - day + (day === 0 ? -6 : 1); 
+            return new Date(d.setDate(diff));
+        }
+
+        function addDays(date, days) {
+            let d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+            d.setDate(d.getDate() + days);
+            return d;
+        }
+
+        function getMonthName(date) {
+            return date.toLocaleString('es-ES', { month: 'long', year: 'numeric' });
+        }
+
+        function getDayName(date, short=false) {
+            return date.toLocaleString('es-ES', { weekday: short ? 'short' : 'long' });
+        }
+
+        // --- AUTENTICACIÓN ---
+        function abrirLogin(modo) {
+            loginMode = modo;
+            document.getElementById('modal-login').classList.remove('hidden');
+            document.getElementById('modal-login').classList.add('flex');
+            document.getElementById('login-title').innerText = 'Acceso Administrador';
+            document.getElementById('pin-input').value = '';
+            document.getElementById('login-error').classList.add('hidden');
+            setTimeout(() => document.getElementById('pin-input').focus(), 100);
+        }
+
+        function cerrarLogin() {
+            document.getElementById('modal-login').classList.add('hidden');
+            document.getElementById('modal-login').classList.remove('flex');
+        }
+
+        function validarAcceso() {
+            const pin = document.getElementById('pin-input').value;
+            if (!pin) return;
+
+            if (pin === CONFIG.PIN_ADMIN) {
+                concederAcceso(pin, true);
+            } else {
+                mostrarErrorLogin("❌ PIN de Administrador incorrecto.");
+            }
+        }
+
+        function mostrarErrorLogin(msg) {
+            const errorMsg = document.getElementById('login-error');
+            errorMsg.innerText = msg;
+            errorMsg.classList.remove('hidden');
+            setTimeout(() => errorMsg.classList.add('hidden'), 3000);
+        }
+
+        function concederAcceso(pin, esAdmin) {
+            localStorage.setItem('darma_pin', pin);
+            localStorage.setItem('darma_mode', esAdmin ? 'admin' : 'cliente');
+            cerrarLogin();
+            
+            modoAdmin = esAdmin;
+            userLogged = null;
+            
+            actualizarUIModo();
+            renderCalendario();
+        }
+
+        function cerrarSesion() { 
+            localStorage.removeItem('darma_pin'); 
+            localStorage.removeItem('darma_mode');
+            modoAdmin = false;
+            actualizarUIModo();
+            renderCalendario();
+        }
+
+        function actualizarUIModo() {
+            const guestControls = document.getElementById('guest-controls');
+            const loggedControls = document.getElementById('logged-controls');
+            const loggedUserName = document.getElementById('logged-user-name');
+            const adminPanel = document.getElementById('admin-panel');
+
+            if (modoAdmin) {
+                guestControls.classList.add('hidden'); guestControls.classList.remove('flex');
+                loggedControls.classList.remove('hidden'); loggedControls.classList.add('flex');
+                loggedUserName.innerText = 'Administrador';
+                
+                adminPanel.classList.remove('hidden'); adminPanel.classList.add('flex');
+            } else {
+                guestControls.classList.remove('hidden'); guestControls.classList.add('flex');
+                loggedControls.classList.add('hidden'); loggedControls.classList.remove('flex');
+                
+                adminPanel.classList.add('hidden'); adminPanel.classList.remove('flex');
+            }
+        }
+
+        // --- LÓGICA DEL CALENDARIO ---
+        function cambiarVista(vista) {
+            currentView = vista;
+            document.getElementById('btn-view-day').className = `px-4 py-1.5 rounded-lg text-sm font-semibold transition-all ${vista==='day' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500'}`;
+            document.getElementById('btn-view-week').className = `px-4 py-1.5 rounded-lg text-sm font-semibold transition-all ${vista==='week' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500'}`;
+            document.getElementById('btn-view-month').className = `px-4 py-1.5 rounded-lg text-sm font-semibold transition-all ${vista==='month' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500'}`;
+            renderCalendario();
+        }
+
+        function navegarCalendario(dir) {
+            if(currentView === 'day') currentDate.setDate(currentDate.getDate() + dir);
+            if(currentView === 'week') currentDate.setDate(currentDate.getDate() + (dir * 7));
+            if(currentView === 'month') currentDate.setMonth(currentDate.getMonth() + dir);
+            renderCalendario();
+        }
+
+        function hoyCalendario() {
+            currentDate = new Date();
+            renderCalendario();
+        }
+
+        function renderCalendario() {
+            const grid = document.getElementById('calendar-grid');
+            const title = document.getElementById('calendar-title');
+            if(!grid || !title) return;
+            grid.innerHTML = '';
+
+            if (currentView === 'day') {
+                title.innerText = `${getDayName(currentDate)} ${currentDate.getDate()} ${getMonthName(currentDate).split(' ')[0]}`;
+                renderDayView(grid);
+            } else if (currentView === 'week') {
+                let start = getStartOfWeek(currentDate);
+                title.innerText = `${getMonthName(start)}`;
+                renderWeekView(grid, start);
+            } else if (currentView === 'month') {
+                title.innerText = getMonthName(currentDate);
+                renderMonthView(grid);
+            }
+        }
+
+        function renderWeekView(container, startOfWeekDate) {
+            let html = `<div class="calendar-grid-week bg-slate-50">`;
+            
+            html += `<div class="border-r border-b border-slate-200 bg-white"></div>`;
+            for (let i = 0; i < 7; i++) {
+                let d = addDays(startOfWeekDate, i);
+                let isToday = formatDate(d) === formatDate(new Date());
+                let colorClass = isToday ? 'text-emerald-600' : 'text-slate-700';
+                let bgClass = isToday ? 'bg-emerald-50 rounded-full w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center mx-auto' : '';
+                html += `
+                    <div class="text-center py-2 sm:py-3 border-r border-b border-slate-200 bg-white sticky top-0 z-10 px-0.5">
+                        <div class="text-[9px] sm:text-[10px] uppercase font-bold text-slate-400 mb-0.5 truncate">${getDayName(d, true)}</div>
+                        <div class="text-xs sm:text-lg font-bold ${colorClass}">
+                            <div class="${bgClass}">${d.getDate()}</div>
+                        </div>
+                    </div>`;
+            }
+
+            for (let h = CONFIG.START_HOUR; h <= CONFIG.END_HOUR; h++) {
+                let timeStr = `${h.toString().padStart(2, '0')}:00`;
+                html += `<div class="time-cell bg-white"><span>${timeStr}</span></div>`;
+                
+                for (let i = 0; i < 7; i++) {
+                    let d = addDays(startOfWeekDate, i);
+                    let dateStr = formatDate(d);
+                    html += getSlotCellHTML(dateStr, timeStr);
+                }
+            }
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        function renderDayView(container) {
+            let html = `<div class="calendar-grid-day bg-slate-50">`;
+            
+            html += `<div class="border-r border-b border-slate-200 bg-white"></div>`;
+            let isToday = formatDate(currentDate) === formatDate(new Date());
+            html += `
+                <div class="text-center py-3 border-b border-slate-200 bg-white sticky top-0 z-10">
+                    <div class="text-[10px] uppercase font-bold text-slate-400 mb-1">${getDayName(currentDate)}</div>
+                    <div class="text-xl font-bold ${isToday ? 'text-emerald-600' : 'text-slate-700'}">${currentDate.getDate()}</div>
+                </div>`;
+
+            let dateStr = formatDate(currentDate);
+            for (let h = CONFIG.START_HOUR; h <= CONFIG.END_HOUR; h++) {
+                let timeStr = `${h.toString().padStart(2, '0')}:00`;
+                html += `<div class="time-cell bg-white"><span>${timeStr}</span></div>`;
+                html += getSlotCellHTML(dateStr, timeStr);
+            }
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        function renderMonthView(container) {
+            let year = currentDate.getFullYear();
+            let month = currentDate.getMonth();
+            let firstDay = new Date(year, month, 1).getDay();
+            firstDay = firstDay === 0 ? 6 : firstDay - 1;
+            let daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            let html = `<div class="calendar-grid-month bg-slate-50 border-l border-t border-slate-200">`;
+            
+            const dias = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+            dias.forEach(d => {
+                html += `<div class="text-center py-2 bg-white text-xs font-bold text-slate-400 uppercase border-r border-b border-slate-200">${d}</div>`;
+            });
+
+            for(let i=0; i<firstDay; i++) {
+                html += `<div class="min-h-[100px] bg-slate-50 border-r border-b border-slate-200 p-2"></div>`;
+            }
+
+            for(let day=1; day<=daysInMonth; day++) {
+                let currentD = new Date(year, month, day);
+                let dateStr = formatDate(currentD);
+                let isToday = dateStr === formatDate(new Date());
+                
+                let daySlots = slots.filter(s => s.date === dateStr);
+                
+                html += `
+                    <div class="min-h-[100px] bg-white border-r border-b border-slate-200 p-1 hover:bg-slate-50 cursor-pointer transition-colors" onclick="irADia('${dateStr}')">
+                        <div class="text-right text-sm font-semibold mb-1 ${isToday ? 'text-white bg-emerald-500 rounded-full w-6 h-6 flex items-center justify-center ml-auto' : 'text-slate-700 pr-1'}">${day}</div>
+                        <div class="flex flex-col gap-1">`;
+                
+                daySlots.forEach(s => {
+                    let isFull = s.clientes.length >= CONFIG.MAX;
+                    let isPartial = s.clientes.length >= 1 && !isFull;
+                    let color = isFull ? 'bg-red-500' : (isPartial ? 'bg-sky-500' : 'bg-emerald-500');
+                    html += `<div class="text-[9px] text-white ${color} px-1.5 py-0.5 rounded truncate">${s.time} - ${s.clientes.length}/${CONFIG.MAX}</div>`;
+                });
+
+                html += `</div></div>`;
+            }
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        function irADia(dateStr) {
+            currentDate = parseDateStr(dateStr);
+            cambiarVista('day');
+        }
+
+        function getSlotCellHTML(dateStr, timeStr) {
+            let slot = slots.find(s => s.date === dateStr && s.time === timeStr);
+            
+            if (slot) {
+                let numCli = slot.clientes.length;
+                let isFull = numCli >= CONFIG.MAX;
+                let isPartial = numCli >= 1 && !isFull;
+                
+                let cssClass = isFull ? 'slot-completo' : (isPartial ? 'slot-parcial' : 'slot-disponible');
+                let label = isFull ? 'Aforo completo' : (isPartial ? 'Ocupación parcial' : 'Libre');
+                let emoji = isFull ? '🚫' : (isPartial ? '👥' : '✓');
+                
+                if(userLogged && slot.clientes.includes(userLogged.nombre)) {
+                    cssClass = 'bg-emerald-500 text-white border border-emerald-600 shadow-md transform scale-[1.02]';
+                    label = 'Tú';
+                    emoji = '⭐';
+                }
+
+                return `
+                    <div class="grid-cell" onclick="interactuarSlot('${slot.id}')">
+                        <div class="slot-chip ${cssClass}">
+                            <div class="flex justify-between items-center text-[10px] sm:text-xs leading-tight">
+                                <span class="font-bold truncate">${timeStr}</span>
+                                <span class="text-[10px]">${emoji}</span>
+                            </div>
+                            <div class="text-[9px] sm:text-[10px] opacity-90 truncate leading-tight">${label}</div>
+                            <div class="text-[9px] sm:text-[10px] font-mono leading-tight">${numCli}/${CONFIG.MAX}</div>
+                        </div>
+                    </div>`;
+            } else {
+                if (modoAdmin) {
+                    return `<div class="grid-cell cursor-pointer hover:bg-slate-100" onclick="crearSlot('${dateStr}', '${timeStr}')">
+                                <div class="w-full h-full border border-dashed border-slate-300 rounded-lg flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity text-slate-400 text-sm sm:text-xl">+</div>
+                            </div>`;
+                } else {
+                    return `<div class="grid-cell bg-slate-50/50"></div>`;
+                }
+            }
+        }
+
+        function crearSlot(dateStr, timeStr) {
+            if (!modoAdmin) return;
+            appData.slots.push({
+                id: Date.now().toString(),
+                date: dateStr,
+                time: timeStr,
+                clientes: []
+            });
+            guardarEstado();
+            renderCalendario();
+        }
+
+        function interactuarSlot(id) {
+            let slot = appData.slots.find(s => s.id === id);
+            if (!slot) return;
+
+            if (modoAdmin) {
+                let nuevoNum = prompt(`Administrar sesión ${slot.date} a las ${slot.time}\nAsistentes actuales: ${slot.clientes.length}\n\nIntroduce el NUEVO NÚMERO total de asistentes (o deja en blanco para cancelar).\nEscribe 'B' para borrar la sesión.`);
+                
+                if (nuevoNum === null) return;
+                
+                if (nuevoNum.toUpperCase() === 'B') {
+                    if(confirm("¿Seguro que quieres eliminar esta sesión?")) {
+                        appData.slots = appData.slots.filter(s => s.id !== id);
+                        slots = appData.slots; 
+                        guardarEstado();
+                        renderCalendario();
+                    }
+                    return;
+                }
+
+                let num = parseInt(nuevoNum);
+                if (!isNaN(num) && num >= 0) {
+                    slot.clientes = Array.from({length: num}, (_, i) => `Cliente ${i+1}`);
+                    guardarEstado();
+                    renderCalendario();
+                }
+            } else {
+                alert("⚠️ Por favor, utiliza el formulario inferior para solicitar tu sesión.");
+            }
+        }
+
+        function copiarSemana() {
+            if (!modoAdmin) return;
+            
+            let start = getStartOfWeek(currentDate);
+            let startStr = formatDate(start);
+            let end = addDays(start, 6);
+            let endStr = formatDate(end);
+            
+            if(!confirm(`¿Copiar todas las sesiones de esta semana (${startStr} al ${endStr}) a la semana siguiente?`)) return;
+
+            let semanaActualSlots = appData.slots.filter(s => {
+                return s.date >= startStr && s.date <= endStr;
+            });
+
+            if (semanaActualSlots.length === 0) {
+                alert("⚠️ No hay sesiones creadas en la semana actual visible para copiar.");
+                return;
+            }
+
+            let añadidos = 0;
+            semanaActualSlots.forEach(s => {
+                let dateObj = parseDateStr(s.date);
+                let nextDateObj = addDays(dateObj, 7);
+                let nextDateStr = formatDate(nextDateObj);
+                
+                let existe = appData.slots.find(x => x.date === nextDateStr && x.time === s.time);
+                if(!existe) {
+                    appData.slots.push({
+                        id: Date.now().toString() + "_" + Math.random().toString(36).substring(2, 6),
+                        date: nextDateStr,
+                        time: s.time,
+                        clientes: []
+                    });
+                    añadidos++;
+                }
+            });
+
+            guardarEstado();
+            alert(`✅ Semana copiada con éxito. Se han creado ${añadidos} nuevas sesiones para la semana que viene.`);
+            renderCalendario();
+        }
+
+        function enviarWhatsApp() {
+            const n = document.getElementById("form-nombre").value;
+            const t = document.getElementById("form-tel").value;
+            const f = document.getElementById("form-fecha").value;
+            const obs = document.getElementById("form-obs").value;
+            
+            if(!n || !t) return alert("Por favor, rellena al menos el nombre y el teléfono de contacto.");
+            
+            const mensaje = `*SOLICITUD DE SESIÓN DARMA*\n------------------\n*Nombre:* ${n}\n*Teléfono:* ${t}\n*Fecha Solicitada:* ${f}\n*Observaciones:* ${obs || 'Ninguna'}\n------------------\nQuedo a la espera de confirmación.`;
+            window.open(`https://wa.me/${CONFIG.WHATSAPP}?text=${encodeURIComponent(mensaje)}`);
+        }
+    </script>
+</body>
+</html>
