@@ -293,11 +293,17 @@
             <h2 class="text-3xl sm:text-5xl font-extrabold mb-4">🏋️ Gimnasio Fresno</h2>
             <p class="text-slate-100 max-w-2xl mx-auto mb-10 text-base sm:text-lg">Actividades, horarios y tarifas del Gimnasio de Fresno de Cantespino.</p>
             
-            <div class="flex flex-col sm:flex-row justify-center items-center gap-4 max-w-2xl mx-auto">
+            <div class="flex flex-col sm:flex-row flex-wrap justify-center items-center gap-4 max-w-4xl mx-auto">
                 <!-- Botón Horarios -->
                 <a href="Horarios_Tarifas.png" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#22c55e] hover:bg-green-500 text-white font-bold px-8 py-4 rounded-xl shadow-lg shadow-green-600/20 hover:shadow-green-600/40 hover:-translate-y-0.5 transition-all">
                     <i data-lucide="calendar" class="w-5 h-5"></i>
                     Horarios y Tarifas
+                </a>
+                
+                <!-- Botón Disponibilidad -->
+                <a href="https://darma-sport.github.io/servicios/index3.html" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold px-6 py-3.5 rounded-xl text-sm shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 hover:-translate-y-0.5 transition-all">
+                    <i data-lucide="calendar-check" class="w-4 h-4"></i>
+                    Ver disponibilidad
                 </a>
                 
                 <!-- Botón Resultados -->
@@ -377,7 +383,7 @@
             </div>
            
             <!-- Descuentos y Promos con interlineado reducido -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
                <!-- Caja Descuentos Edad -->
                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/60 relative overflow-hidden">
                    <div class="absolute right-0 bottom-0 w-32 h-32 bg-slate-50 rounded-full -mr-10 -mb-10"></div>
@@ -429,13 +435,6 @@
                    </div>
                </div>
             </div>
-
-            <!-- BOTÓN CALCULADORA AÑADIDO AQUÍ -->
-            <div class="flex justify-center mb-12">
-                <a href="https://darma-sport.github.io/servicios/index2.html" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 shadow-sm transition-colors duration-200">
-                    Calcula tu tarifa
-                </a>
-            </div>
             
             <!-- Condiciones -->
             <div class="bg-white/80 border border-slate-200/60 p-6 rounded-2xl max-w-4xl mx-auto">
@@ -444,7 +443,7 @@
                     Condiciones del servicio
                 </h4>
                 <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-xs text-slate-600 list-none">
-                    <li class="flex items-start gap-2"><span class="text-brand-primary font-bold">▪</span> <span><strong>Promoción: IVA INCLUIDO</strong></span></li>
+                    <li class="flex items-start gap-2"><span class="text-brand-primary font-bold">▪</span> <span><strong>Promoción IVA incluido</strong></span></li>
                     <li class="flex items-start gap-2"><span class="text-brand-primary font-bold">▪</span> <span>Duración de sesiones una (1) hora.</span></li>
                     <li class="flex items-start gap-2"><span class="text-brand-primary font-bold">▪</span> <span>Días y hora de sesiones previo concierto.</span></li>
                     <li class="flex items-start gap-2"><span class="text-brand-primary font-bold">▪</span> <span>Planificación inicial dos (2) días por semana.</span></li>
@@ -512,7 +511,7 @@
 
             <!-- Sección QR -->
             <div class="bg-white/5 border border-white/15 p-8 rounded-3xl max-w-lg mx-auto flex flex-col items-center">
-                <p class="font-bold text-base text-slate-100 mb-6 leading-snug">Si deseas una un presupuesto o cita, pulsa o pincha en este QR</p>
+                <p class="font-bold text-base text-slate-100 mb-6 leading-snug">Si deseas una prueba gratuita o presupuesto, pulsa o pincha en este QR</p>
                 <a href="https://forms.gle/8DFf1WHfeK2cBHhRA" target="_blank" rel="noopener noreferrer" class="relative group">
                     <div class="absolute inset-0 bg-brand-accent/20 rounded-2xl blur-lg group-hover:blur-xl transition-all"></div>
                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://forms.gle/8DFf1WHfeK2cBHhRA" class="relative w-36 h-36 bg-white p-3 rounded-2xl border-2 border-white/10 shadow-xl transition-transform group-hover:scale-105" alt="QR Formulario">
