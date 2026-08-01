@@ -30,6 +30,7 @@
         
         .slot-disponible { background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
         .slot-parcial { background-color: #e0f2fe; color: #075985; border: 1px solid #bae6fd; }
+        .slot-semi { background-color: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
         .slot-completo { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
     </style>
 </head>
@@ -141,8 +142,8 @@
                     </div>
                     <div class="flex bg-slate-100 p-1 rounded-xl gap-1">
                         <button id="btn-view-day" onclick="cambiarVista('day')" class="px-4 py-1.5 rounded-lg text-sm font-semibold transition-all text-slate-500">Día</button>
-                        <button id="btn-view-week" onclick="cambiarVista('week')" class="px-4 py-1.5 rounded-lg text-sm font-semibold transition-all bg-white text-emerald-600 shadow-sm">Semana</button>
-                        <button id="btn-view-month" onclick="cambiarVista('month')" class="px-4 py-1.5 rounded-lg text-sm font-semibold transition-all text-slate-500">Mes</button>
+                        <button id="btn-view-week" onclick="cambiarVista('week')" class="px-4 py-1.5 rounded-lg text-sm font-semibold transition-all text-slate-500">Semana</button>
+                        <button id="btn-view-month" onclick="cambiarVista('month')" class="px-4 py-1.5 rounded-lg text-sm font-semibold transition-all bg-white text-emerald-600 shadow-sm">Mes</button>
                     </div>
                 </div>
                 
@@ -196,7 +197,7 @@
             PIN_CENTRO: "1234", 
             PIN_ADMIN: "9498",
             START_HOUR: 10,
-            END_HOUR: 21
+            END_HOUR: 20
         };
 
         let modoAdmin = false;
@@ -212,7 +213,7 @@
         
         // Estado del calendario
         let currentDate = new Date();
-        let currentView = 'week'; // 'day', 'week', 'month'
+        let currentView = 'month'; // 'day', 'week', 'month'
 
         // --- SISTEMA DE ALMACENAMIENTO (JSON / LOCALSTORAGE) ---
         function guardarEstado() {
@@ -549,17 +550,39 @@
                 
                 let daySlots = slots.filter(s => s.date === dateStr);
                 
-                html += `
-                    <div class="min-h-[100px] bg-white border-r border-b border-slate-200 p-1 hover:bg-slate-50 cursor-pointer transition-colors" onclick="irADia('${dateStr}')">
-                        <div class="text-right text-sm font-semibold mb-1 ${isToday ? 'text-white bg-emerald-500 rounded-full w-6 h-6 flex items-center justify-center ml-auto' : 'text-slate-700 pr-1'}">${day}</div>
-                        <div class="flex flex-col gap-1">`;
-                
-                daySlots.forEach(s => {
-                    let isFull = s.clientes.length >= CONFIG.MAX;
-                    let isPartial = s.clientes.length >= 1 && !isFull;
-                    let color = isFull ? 'bg-red-500' : (isPartial ? 'bg-sky-500' : 'bg-emerald-500');
-                    html += `<div class="text-[9px] text-white ${color} px-1.5 py-0.5 rounded truncate">${s.time} - ${s.clientes.length}/${CONFIG.MAX}</div>`;
+                // Ordenar cronológicamente por hora para evitar desajustes en la visualización
+                daySlots.sort((a, b) => {
+                    return parseInt(a.time.split(':')[0]) - parseInt(b.time.split(':')[0]);
                 });
+                
+                html += `
+                    <div class="min-h-[100px] bg-white border-r border-b border-slate-200 p-1 hover:bg-slate-50 cursor-pointer transition-colors overflow-hidden" onclick="irADia('${dateStr}')">
+                        <div class="text-right text-sm font-semibold mb-1 ${isToday ? 'text-white bg-emerald-500 rounded-full w-6 h-6 flex items-center justify-center ml-auto' : 'text-slate-700 pr-1'}">${day}</div>
+                        <div class="flex flex-col gap-0.5">`;
+                
+                // Dividir en Mañana y Tarde
+                let morningSlots = daySlots.filter(s => parseInt(s.time.split(':')[0]) < 15);
+                let afternoonSlots = daySlots.filter(s => parseInt(s.time.split(':')[0]) >= 15);
+
+                const renderMiniSlots = (title, slotsList) => {
+                    let mHtml = '';
+                    if (slotsList.length > 0) {
+                        mHtml += `<div class="text-[7.5px] font-black text-slate-400 uppercase leading-none mt-1 mb-0.5 px-0.5">${title}</div>`;
+                        slotsList.forEach(s => {
+                            let numCli = s.clientes.length;
+                            let isFull = numCli >= CONFIG.MAX;
+                            let isSemi = numCli >= 5 && numCli <= 9;
+                            let isPartial = numCli >= 1 && numCli <= 4;
+                            
+                            let color = isFull ? 'bg-red-500' : (isSemi ? 'bg-orange-400' : (isPartial ? 'bg-sky-500' : 'bg-emerald-500'));
+                            mHtml += `<div class="text-[9px] text-white ${color} px-1.5 py-0.5 rounded mb-0.5 truncate shadow-sm">${s.time} - ${numCli}/${CONFIG.MAX}</div>`;
+                        });
+                    }
+                    return mHtml;
+                };
+
+                html += renderMiniSlots('Mañana', morningSlots);
+                html += renderMiniSlots('Tarde', afternoonSlots);
 
                 html += `</div></div>`;
             }
@@ -578,11 +601,12 @@
             if (slot) {
                 let numCli = slot.clientes.length;
                 let isFull = numCli >= CONFIG.MAX;
-                let isPartial = numCli >= 1 && !isFull;
+                let isSemi = numCli >= 5 && numCli <= 9;
+                let isPartial = numCli >= 1 && numCli <= 4;
                 
-                let cssClass = isFull ? 'slot-completo' : (isPartial ? 'slot-parcial' : 'slot-disponible');
-                let label = isFull ? 'Aforo completo' : (isPartial ? 'Ocupación parcial' : 'Libre');
-                let emoji = isFull ? '🚫' : (isPartial ? '👥' : '✓');
+                let cssClass = isFull ? 'slot-completo' : (isSemi ? 'slot-semi' : (isPartial ? 'slot-parcial' : 'slot-disponible'));
+                let label = isFull ? 'Aforo completo' : (isSemi ? 'Semiocupación por grupo' : (isPartial ? 'Ocupación parcial' : 'Libre'));
+                let emoji = isFull ? '🚫' : (isSemi ? '🔥' : (isPartial ? '👥' : '✓'));
                 
                 if(userLogged && slot.clientes.includes(userLogged.nombre)) {
                     cssClass = 'bg-emerald-500 text-white border border-emerald-600 shadow-md transform scale-[1.02]';
