@@ -605,7 +605,7 @@
                 let isPartial = numCli >= 1 && numCli <= 4;
                 
                 let cssClass = isFull ? 'slot-completo' : (isSemi ? 'slot-semi' : (isPartial ? 'slot-parcial' : 'slot-disponible'));
-                let label = isFull ? 'Aforo completo' : (isSemi ? 'Semiocupación por grupo' : (isPartial ? 'Ocupación parcial' : 'Libre'));
+                let label = isFull ? 'Aforo completo' : (isSemi ? 'Alta ocupación por grupo' : (isPartial ? 'Ocupación parcial' : 'Libre'));
                 let emoji = isFull ? '🚫' : (isSemi ? '🔥' : (isPartial ? '👥' : '✓'));
                 
                 if(userLogged && slot.clientes.includes(userLogged.nombre)) {
